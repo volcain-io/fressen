@@ -1,14 +1,15 @@
-# Mobile Web Specialist Certification Course
----
-#### _Three Stage Course Material Project - Restaurant Reviews_
+# Fressen
 
-## Project Overview: Stage 1
+> A restaurant review mobile-ready web application with seamless offline experience.
 
-For the **Restaurant Reviews** projects, you will incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, you will take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. You will also add a service worker to begin the process of creating a seamless offline experience for your users.
+## Getting started
 
-### Specification
+A quick introduction of the minimal setup you need to get up running this project.
 
-You have been provided the code for a restaurant reviews website. The code has a lot of issues. It’s barely usable on a desktop browser, much less a mobile device. It also doesn’t include any standard accessibility features, and it doesn’t work offline at all. Your job is to update the code to resolve these issues while still maintaining the included functionality. 
+```shell
+git clone https://github.com/volcain-io/fressen.github
+cd fressen/
+```
 
 ### What do I do from here?
 
@@ -16,13 +17,43 @@ You have been provided the code for a restaurant reviews website. The code has a
 
 In a terminal, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 8000` (or some other port, if port 8000 is already in use.) For Python 3.x, you can use `python3 -m http.server 8000`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
 
-2. With your server running, visit the site: `http://localhost:8000`, and look around for a bit to see what the current experience looks like.
-3. Explore the provided code, and make start making a plan to implement the required features in three areas: responsive design, accessibility and offline use.
-4. Write code to implement the updates to get this site on its way to being a mobile-ready website.
+2. With your server running, visit the site: `http://localhost:8000`.
 
-### Note about ES6
+## Developing
 
-Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
+### Built With
+
+[HTML5](https://www.w3.org/TR/html5/)
+[CSS3](https://www.w3.org/Style/CSS/)
+[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+
+### Prerequisites
+
+In order to display 'index.html' you have to start a simple HTTP server.
+
+### Setting up Developing
+
+Clone the repository:
+
+```shell
+git clone https://github.com/volcain-io/fressen.github
+cd fressen/
+npm install
+```
+
+Happy coding!
+
+## Validation
+
+The HTML and CSS Code is validated against the [W3C's Validators](http://validator.w3.org/).
+
+## Style guide
+
+The code style relies on [Prettier](https://prettier.io).
+
+## Licensing
+
+[MIT License](LICENSE)
 
 
 
