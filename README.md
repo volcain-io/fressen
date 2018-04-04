@@ -31,7 +31,7 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 
 In order to display 'index.html' you have to start a simple HTTP server.
 
-### Setting up Developing
+### Setting up Dev
 
 Clone the repository:
 
@@ -40,6 +40,14 @@ git clone https://github.com/volcain-io/fressen.github
 cd fressen/
 npm install
 ```
+
+Place all images inside the `img` folder. To create responsive images
+```shell
+cd fressen/
+./node_modules/grunt/bin/grunt
+```
+
+Grunt than creates a new, completed images directory called `images` with responsive images. 
 
 Happy coding!
 
