@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
-  <title>Restaurant Info</title>
+  <!-- Main style for FRESSEN -->
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Style for restaurant.html -->
+  <link rel="stylesheet" href="css/restaurant.css" type="text/css">
+  <!-- Google Fonts: Lato (regular 400, black 900) -->
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+  <!-- Google Fonts: Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title id="title">Fressen - </title>
 </head>
 
-<body class="inside">
+<body>
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <button onclick="window.location.assign('/');" aria-label="Go back">
+        <i class="material-icons rem-3">arrow_back</i>
+      </button>
+      <h1 id="name"></h1>
     </nav>
-    <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
-      <li><a href="/">Home</a></li>
-    </ul>
-    <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
   <!-- End header -->
 
   <!-- Beginning main -->
   <main id="maincontent">
-    <!-- Beginning map -->
-    <section id="map-container">
-      <div id="map"></div>
-    </section>
-    <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
-      <img id="restaurant-img">
-      <p id="restaurant-cuisine"></p>
-      <p id="restaurant-address"></p>
-      <table id="restaurant-hours"></table>
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
-      <ul id="reviews-list"></ul>
+      <h2 align="center">Reviews</h2>
+      <div id="reviews">
+      </div>
     </section>
     <!-- End reviews -->
   </main>
@@ -51,19 +49,91 @@
 
   <!-- Beginning footer -->
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    Copyright (c) 2018 &middot;
+    <a href="/">
+      <strong>Fressen</strong>
+    </a> &middot; All Rights Reserved
   </footer>
   <!-- End footer -->
 
   <!-- Beginning scripts -->
+  <!-- Main javascript file -->
+  <script type="application/javascript" charset="utf-8" src="js/app.js"></script>
   <!-- Database helpers -->
   <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
+  <script>
+   function toggleHours(evt) {
+     const elem = document.getElementById('operating-hours-all');
+     const arrow = document.getElementById('arrow');
+     let elemNewValue = 'block';
+     let arrowNewValue = 'down';
+     if ( elem.style.display && elem.style.display !== 'none' ) {
+         elemNewValue = 'none';
+         arrowNewValue = 'left';
+     }
+     elem.style.display = elemNewValue;
+     arrow.textContent = `keyboard_arrow_${arrowNewValue}`;
+   }
+   function openMaps(name, address) {
+      window.open(`https://www.google.com/maps/search/?api=1&query=${name},${address}`, '_blank');
+   }
+  </script>
 
+  <!-- Beginning templates -->
+  <!-- Restaurant template -->
+  <script type="text/template" id="restaurant-template">
+    <div class="flex">
+      <h2 class="neighborhood">
+        <span id="neighborhood-name"></span>
+        <p id="address" class="address">{address}</p>
+      </h2>
+      <button onclick="openMaps(`{name}`,`{address}`)" aria-label="Go to Google Maps">
+        <i class="material-icons rem-3">directions</i>
+      </button>
+    </div>
+    <div class="flex">
+      <p class="cuisine" aria-label="{cuisine-name} cuisine">Cuisine: <span id="cuisine-name"></span></p>
+      <p class="rating" aria-label="Overall rating is {rating}">Rating: {rating}</p>
+    </div>
+    <div class="card" id="restaurant-{id}" aria-label="Place called {name}">
+      <div class="grid">
+        <img id="img"
+             src="./images/{id}-medium_2x.jpg"
+             srcset="./images/{id}-medium_2x.jpg 800w, ./images/{id}-medium_1x.jpg 400w"
+             alt="View of {name}">
+        <div id="map" class="map"></div>
+        <button onclick="toggleHours(event)" aria-label="Show/hide Operating Hours">
+          <span style="font-size: 1.5rem;">Operating Hours</span>
+          <i class="material-icons" id="arrow">keyboard_arrow_left</i>
+        </button>
+        <table id="operating-hours-all" aria-label="Operating Hours"></table>
+      </div>
+    </div>
+  </script>
+  <script type="text/template" id="review-template">
+    <div class="card" id="review-{id}" aria-label="Review by {name}">
+      <div class="grid">
+        <i class="material-icons rem-3" aria-label="User icon">portrait</i>
+        <h3>{name}</h3>
+        <p class="date" aria-label="Publishing date">{date}</p>
+        <p class="rating" aria-label="Users rating">Rating: {rating}</p>
+        <p class="comments" aria-label="Users comment">{comments}</p>
+      </div>
+    </div>
+  </script>
+  <!-- Empty list template -->
+  <script type="text/template" id="empty-view">
+    <div class="empty" id="empty">
+      <img alt="Knife and Fork Icon" src="./images/fixed/utensils.svg" />
+      <h3>No reviews yet!</h3>
+    </div>
+  </script>
+  <!-- End templates -->
 </body>
 
 </html>

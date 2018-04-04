@@ -1,46 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/styles.css">
-  <title>Restaurant Reviews</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Normalize.css for better cross-browser consistency -->
+  <!-- <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" /> -->
+  <!-- Main style for FRESSEN -->
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Style for index.html -->
+  <link rel="stylesheet" href="css/index.css">
+  <!-- Google Fonts: Lato (regular 400, black 900) -->
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
+  <!-- Google Fonts: Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title>FRESSEN</title>
 </head>
 
 <body>
+  <!-- Beginning header -->
   <header>
+    <!-- Beginning nav -->
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>
+        <a href="/">Fressen</a>
+        <!-- <a href="/">Fressen vo/ca:n</a> -->
+      </h1>
     </nav>
+    <!-- End nav -->
   </header>
+  <!-- End header -->
 
+  <!-- Beginning main -->
   <main id="maincontent">
-    <section id="map-container">
-      <div id="map"></div>
-    </section>
-    <section>
-      <div class="filter-options">
-        <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-          <option value="all">All Neighborhoods</option>
-        </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-          <option value="all">All Cuisines</option>
-        </select>
+    <!-- Beginning filter neighborhood -->
+    <section class="filter">
+      <h2 class="filter-header">
+        I'd like to eat in
+      </h2>
+      <div class="horizontal-scrolling" id="neighborhoods" role="listbox" aria-orientation="horizontal">
       </div>
-      <ul id="restaurants-list"></ul>
     </section>
+    <!-- End filter -->
+    <!-- Beginning filter cuisine -->
+    <section class="filter">
+      <h2 class="filter-header">
+        I'd like to eat
+      </h2>
+      <div class="horizontal-scrolling" id="cuisines" role="listbox" aria-orientation="horizontal"></div>
+      </div>
+    </section>
+    <!-- End filter -->
+    <!-- Beginning filter restaurant -->
+    <section class="filter">
+      <h2 class="filter-header">
+        Nearby places
+      </h2>
+      <div class="horizontal-scrolling" id="restaurants" role="listbox">
+      </div>
+    </section>
+    <!-- End filter -->
   </main>
+  <!-- End main -->
 
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script>
-
-
+  <!-- Beginning footer -->
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    Copyright (c) 2018 &middot;
+    <a href="/">
+      <strong>Fressen</strong>
+    </a> &middot; All Rights Reserved
   </footer>
+  <!-- End footer -->
 
+  <!-- Beginning scripts -->
+  <!-- Main javascript file -->
+  <script type="application/javascript" charset="utf-8" src="js/app.js"></script>
+  <!-- Database helpers -->
+  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
+  <!-- Index javascript file -->
+  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+  <!-- Google Maps -->
+  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap"></script> -->
+  <!-- End scripts -->
+
+  <!-- Beginning templates -->
+  <!-- Neighborhood template -->
+  <script type="text/template" id="neighborhood-template">
+    <div class="card small" id="neighborhood-{id}" role="option" aria-label="{name} Neighborhood" aria-selected="false">
+      <div class="inner-neighborhood">
+        <img src="./images/fixed/{icon}" alt="{altText}" />
+          <h3><a href="#">{name}</a></h3>
+      </div>
+    </div>
+  </script>
+  <!-- Cuisine template -->
+  <script type="text/template" id="cuisine-template">
+    <div class="card small" id="cuisine-{id}" role="option" aria-label="{name} Cuisine" aria-selected="false">
+      <div class="inner-cuisine">
+        <img src="./images/fixed/{icon}" alt="{altText}" />
+        <h3><a href="#">{name}</a></h3>
+      </div>
+    </div>
+  </script>
+  <!-- Restaurant template -->
+  <script type="text/template" id="restaurant-template">
+    <div class="card large" id="restaurant-{id}" role="option" aria-label="Place called {name}" aria-selected="false">
+      <div class="inner-places">
+        <span class="rating" id="rating-{id}">{rating}</span>
+        <img class="restaurant-img" alt="View of {name}" src="{id}-small_2x.jpg" srcset="./images/{id}-small_2x.jpg 2x, ./images/{id}-small_1x.jpg 1x">
+        <h3><a href="#">{name}</a></h3>
+        <p>{address}</p>
+        <p class="more-details">Todays Operating Hours</p>
+        <p class="more-details">{operatingHours}</p>
+      </div>
+    </div>
+  </script>
+  <!-- Empty list template -->
+  <script type="text/template" id="empty-view">
+    <div class="empty" id="empty">
+      <i class="material-icons rem-3 curious-blue">restaurant</i>
+      <h3>No restaurants found. Try again!</h3>
+    </div>
+  </script>
+  <!-- End templates -->
 </body>
 
 </html>

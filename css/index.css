@@ -1,0 +1,109 @@
+/* +++ MAP +++ */
+.map {
+  height: 200px;
+  width: 100%;
+}
+
+/* +++ RATING +++ */
+.rating {
+  float: right;
+  right: 0.5rem;
+  top: 0.5rem;
+  width: 2rem;
+}
+
+/* +++ FILTER +++ */
+.filter {
+  margin: 0 0 1rem 1rem;
+  text-align: center;
+}
+.filter-header {
+  color: var(--filter-header-text-color);
+  font-size: 1.1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* +++ HORIZONTAL SCROLLING +++ */
+.horizontal-scrolling {
+  width: 100%;
+  overflow: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+.horizontal-scrolling > .card {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+/* +++ CARD +++ */
+.card {
+  border: 1px solid var(--iron);
+  border-radius: 5px;
+  background: var(--card-background-color);
+  cursor: pointer;
+}
+.card:hover,
+.card:focus {
+  background: var(--card-background-color-focus);
+}
+.card.selected {
+  background-color: var(--card-background-color-selected);
+}
+.card.small {
+  width: 96px;
+  height: 96px;
+  padding: 1rem;
+}
+.card.small img {
+  height: 64px;
+}
+.card.large {
+  width: 256px;
+  height: 100%;
+}
+.card.large img {
+  width: 100%;
+  height: 152px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.card.large h3,
+.card.large p {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card > .inner-neighborhood,
+.card > .inner-cuisine {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-gap: 1rem;
+  grid-template-rows: 1fr 0;
+}
+.card > .inner-places p {
+  color: var(--card-details-text-color);
+}
+.card > .inner-places p.more-details {
+  color: var(--card-more-details-text-color);
+}
+
+/* +++ MEDIA QUERIES +++ */
+@media screen and (min-width: 550px) {
+  .horizontal-scrolling {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(5 * 256px + 5rem);
+    margin: 0 auto;
+  }
+  .horizontal-scrolling > .card {
+    margin-bottom: 0.5rem;
+    max-width: 256px;
+    align-self: center;
+  }
+}
