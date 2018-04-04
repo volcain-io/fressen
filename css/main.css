@@ -114,10 +114,16 @@ footer a:focus {
   position: relative;
   padding: 0.4rem;
 }
+
 /* +++ MATERIAL ICONS +++ */
 .material-icons.rem-3 {
   font-size: 3rem;
 }
 .material-icons.curious-blue {
   color: var(--curious-blue);
+}
+
+/* +++ CENTER TEXT +++ */
+.text-center {
+  text-align: center;
 }
