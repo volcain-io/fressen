@@ -28,7 +28,7 @@ _registerServiceWorker = () => {
         _trackInstalling(reg.installing);
       });
     })
-    .catch(() => console.log('Failed to register ServiceWorker'));
+    .catch(error => console.error('Failed to register ServiceWorker', error));
 
   // Ensure refresh is only called once
   let refreshing;
