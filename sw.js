@@ -64,7 +64,7 @@ self.addEventListener('fetch', event => {
       event.respondWith(caches.match('./restaurant.html'));
       return;
     }
-    if (requestUrl.pathname.startsWith('/images/')) {
+    if (requestUrl.pathname.includes('/images/')) {
       event.respondWith(_servePhoto(event.request));
       return;
     }
