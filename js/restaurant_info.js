@@ -42,6 +42,7 @@ fetchRestaurantFromURL = callback => {
       }
       document.getElementById('title').textContent += restaurant.name;
       document.getElementById('name').textContent = restaurant.name;
+      document.getElementById('breadcrumb-name').textContent = restaurant.name;
       fillRestaurantHTML(restaurant);
       callback(null, restaurant);
     });
