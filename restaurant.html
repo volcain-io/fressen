@@ -20,7 +20,7 @@
   <header>
     <!-- Beginning nav -->
     <nav>
-      <button onclick="window.location.assign(window.location.origin);" aria-label="Go back">
+      <button onclick="goHome();" aria-label="Go back">
         <i class="material-icons rem-3">arrow_back</i>
       </button>
       <h1 id="name"></h1>
@@ -85,6 +85,10 @@
    }
    function openMaps(name, address) {
       window.open(`https://www.google.com/maps/search/?api=1&query=${name},${address}`, '_blank');
+   }
+   function goHome() {
+      let subfolder = window.location.origin === 'https://volcain-io.github.io' ? 'fressen' : '';
+      window.location.assign(`${window.location.origin}/${subfolder}`);
    }
   </script>
 
