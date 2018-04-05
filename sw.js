@@ -1,4 +1,4 @@
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 4;
 const STATIC_CACHE_NAME = `fressen-static-v${CACHE_VERSION}`;
 const CONTENT_IMGS_CACHE = 'fressen-content-imgs';
 const ALL_CACHES = [STATIC_CACHE_NAME, CONTENT_IMGS_CACHE];
@@ -60,7 +60,7 @@ self.addEventListener('fetch', event => {
   let requestUrl = new URL(event.request.url);
 
   if (requestUrl.origin === location.origin) {
-    if (requestUrl.pathname === '/restaurant.html') {
+    if (requestUrl.pathname.includes('restaurant.html')) {
       event.respondWith(caches.match('./restaurant.html'));
       return;
     }
