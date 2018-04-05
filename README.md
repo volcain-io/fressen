@@ -1,6 +1,10 @@
 # Fressen
 
-> A restaurant review mobile-ready web application with seamless offline experience.
+> A restaurant review mobile-ready web application with seamless offline experience called "Fressen".
+
+## Why "Fressen"?
+
+It's german and the meaning is to eat away something.
 
 ## Getting started
 
