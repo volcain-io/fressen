@@ -57,7 +57,7 @@
       <h2 class="filter-header">
         Nearby places
       </h2>
-      <div class="horizontal-scrolling" id="restaurants" role="listbox">
+      <div class="flex" id="restaurants" role="listbox">
       </div>
     </section>
     <!-- End filter -->
@@ -107,8 +107,8 @@
   <script type="text/template" id="restaurant-template">
     <div class="card large" id="restaurant-{id}" role="option" aria-label="Place called {name}" aria-selected="false">
       <div class="inner-places">
-        <span class="rating" id="rating-{id}">{rating}</span>
         <img class="restaurant-img" alt="Image of {name} Restaurant" src="{id}-small_2x.jpg" srcset="./images/{id}-small_2x.jpg 2x, ./images/{id}-small_1x.jpg 1x">
+        <span class="rating" id="rating-{id}">{rating}</span>
         <h3><a href="#">{name}</a></h3>
         <p>{address}</p>
         <p class="more-details">Todays Operating Hours</p>
