@@ -191,7 +191,7 @@ fillRestaurantsHTML = restaurants => {
 
     let id = getId(event.target);
     // navigate to info page
-    if (id > 0) window.location.replace(`/restaurant.html?id=${id}`);
+    if (id > 0) window.location.replace(`restaurant.html?id=${id}`);
   });
 };
 
