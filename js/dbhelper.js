@@ -3,8 +3,7 @@
  */
 class DBHelper {
   static get BASE_URL() {
-    const port = 8000; // Change this to your server port
-    return `http://localhost:${port}/data`;
+    return '/data';
   }
 
   /**
@@ -12,7 +11,7 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    return `${DBHelper.BASE_URL}/restaurants.json`;
+    return new Request(`${DBHelper.BASE_URL}/restaurants.json`);
   }
 
   /**
@@ -20,7 +19,7 @@ class DBHelper {
    * Change this to neighborhood_types.json file location on your server.
    */
   static get DB_NEIGHBORHOOD_TYPES_URL() {
-    return `${DBHelper.BASE_URL}/neighborhood_types.json`;
+    return new Request(`${DBHelper.BASE_URL}/neighborhood_types.json`);
   }
 
   /**
@@ -28,7 +27,7 @@ class DBHelper {
    * Change this to cuisine_types.json file location on your server.
    */
   static get DB_CUISINE_TYPES_URL() {
-    return `${DBHelper.BASE_URL}/cuisine_types.json`;
+    return new Request(`${DBHelper.BASE_URL}/cuisine_types.json`);
   }
 
   /**
