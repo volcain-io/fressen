@@ -183,7 +183,7 @@ fillRestaurantsHTML = restaurants => {
     restaurantList.innerHTML = emptyViewTempl;
   }
 
-  // addMarkersToMap(restaurants);
+  addMarkersToMap(restaurants);
 
   // add event listeners
   restaurantList.addEventListener('click', event => {
