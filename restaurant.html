@@ -87,7 +87,7 @@
       window.open(`https://www.google.com/maps/search/?api=1&query=${name},${address}`, '_blank');
    }
    function goHome() {
-      let subfolder = window.location.origin === 'https://volcain-io.github.io' ? 'fressen' : '';
+      let subfolder = window.location.origin === 'https://volcain-io.github.io' ? 'fressen/' : '';
       window.location.assign(`${window.location.origin}/${subfolder}`);
    }
   </script>
