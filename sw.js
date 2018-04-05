@@ -1,4 +1,4 @@
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 const STATIC_CACHE_NAME = `fressen-static-v${CACHE_VERSION}`;
 const CONTENT_IMGS_CACHE = 'fressen-content-imgs';
 const ALL_CACHES = [STATIC_CACHE_NAME, CONTENT_IMGS_CACHE];
