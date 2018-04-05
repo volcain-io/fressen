@@ -5,7 +5,7 @@ _registerServiceWorker = () => {
   if (!'serviceWorker' in navigator) return;
 
   navigator.serviceWorker
-    .register('../sw.js')
+    .register('./../sw.js')
     .then(reg => {
       if (!navigator.serviceWorker.controller) {
         return;
