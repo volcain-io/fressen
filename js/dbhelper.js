@@ -3,7 +3,7 @@
  */
 class DBHelper {
   static get BASE_URL() {
-    return '/data';
+    return './data';
   }
 
   /**
