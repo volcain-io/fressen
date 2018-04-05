@@ -4,8 +4,11 @@
 _registerServiceWorker = () => {
   if (!'serviceWorker' in navigator) return;
 
+  const serviceWorkerURL =
+    location.origin === 'https://volcain-io.github.io' ? '/fressen/sw.js' : '../sw.js';
+  const serviceWorkerScope = location.origin === 'https://volcain-io.github.io' ? '/fressen/' : '/';
   navigator.serviceWorker
-    .register('./../sw.js')
+    .register(serviceWorkerURL, { scope: serviceWorkerScope })
     .then(reg => {
       if (!navigator.serviceWorker.controller) {
         return;
