@@ -140,6 +140,7 @@ nav button {
 @media screen and (min-width: 600px) {
   .card {
     border: 1px solid var(--iron);
+    margin-bottom: 0.5rem;
   }
   #restaurant-container .grid {
     grid-template-columns: repeat(2, 1fr);
@@ -180,5 +181,18 @@ nav button {
   #reviews-container .comments {
     grid-row: 2;
     grid-column: 1 / 5;
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (min-width: 850px) {
+  #reviews-container .comments {
+    font-size: 1.4rem;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  #reviews-container .comments {
+    font-size: 1.8rem;
   }
 }
