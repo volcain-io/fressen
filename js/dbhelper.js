@@ -3,7 +3,7 @@
  */
 class DBHelper {
   static get BASE_URL() {
-    return './data';
+    return 'http://localhost:1337';
   }
 
   /**
@@ -11,7 +11,7 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    return new Request(`${DBHelper.BASE_URL}/restaurants.json`);
+    return new Request(`${DBHelper.BASE_URL}/restaurants`);
   }
 
   /**
@@ -19,7 +19,7 @@ class DBHelper {
    * Change this to neighborhood_types.json file location on your server.
    */
   static get DB_NEIGHBORHOOD_TYPES_URL() {
-    return new Request(`${DBHelper.BASE_URL}/neighborhood_types.json`);
+    return new Request(`${DBHelper.BASE_URL}/neighborhoods`);
   }
 
   /**
@@ -27,7 +27,7 @@ class DBHelper {
    * Change this to cuisine_types.json file location on your server.
    */
   static get DB_CUISINE_TYPES_URL() {
-    return new Request(`${DBHelper.BASE_URL}/cuisine_types.json`);
+    return new Request(`${DBHelper.BASE_URL}/cuisines`);
   }
 
   /**
@@ -40,9 +40,7 @@ class DBHelper {
         return response.json();
       })
       .then(data => {
-        if (data.restaurants) callback(null, data.restaurants);
-        if (data.neighborhoods) callback(null, data.neighborhoods);
-        if (data.cuisines) callback(null, data.cuisines);
+        if (data) callback(null, data);
       })
       .catch(error => {
         // Oops!. Got an error from server.
