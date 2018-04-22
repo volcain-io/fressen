@@ -15,13 +15,26 @@ git clone https://github.com/volcain-io/fressen.github
 cd fressen/
 ```
 
+### Dependency
+
+The project depends on [fressen-dev-server](https://github.com/volcain-io/fressen-dev-server). Please check install notes on the project's README.
+
 ### What do I do from here?
 
-1. In this folder, start up a simple HTTP server to serve up the site files on your local computer. Python has some simple tools to do this, and you don't even need to know Python. For most people, it's already installed on your computer. 
+1. Follow the instructions on [fressen-dev-server](https://github.com/volcain-io/fressen-dev-server) and start the dev server
+2. Run the build process on the root project directory (`fressen`): `gulp --production`
+3. Start up a simple HTTP server to serve up the site distrubution files (inside `dist` folder) on your local computer.
+ - On **Google Chrome** just install the [Web Server for Chrome]() extension. Launch the extension & choose the `dist` folder as your document root, configure the port number (e.g. 8001) and you're done.
 
-In a terminal, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 8000` (or some other port, if port 8000 is already in use.) For Python 3.x, you can use `python3 -m http.server 8000`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
+#### You should now have access to the web app
 
-2. With your server running, visit the site: `http://localhost:8000`.
+With your server up & running, visit the site [http://localhost:8001](http://localhost:8001) (change port number according to your configuration on the previous step).
+
+## Lighthouse
+
+Results of the Audit
+
+![Lighthouse Audit Results](lighthouse-audit-results.png)
 
 ## Developing
 
@@ -33,7 +46,7 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 
 ### Prerequisites
 
-In order to display 'index.html' you have to start a simple HTTP server.
+In order to retrieve data you have to install [fressen-dev-server](https://github.com/volcain-io/fressen-dev-server). Please check installation notes on the project's [README](https://github.com/volcain-io/fressen-dev-server).
 
 ### Setting up Dev
 
@@ -45,13 +58,14 @@ cd fressen/
 npm install
 ```
 
-Place all images inside the `img` folder. To create responsive images
+Start build tool Gulp:
+
 ```shell
 cd fressen/
-./node_modules/grunt/bin/grunt
+gulp
 ```
 
-Grunt than creates a new, completed images directory called `images` with responsive images. 
+Gulp than creates a new, completed `dist` directory with all the optimizations you need and will open the web app automatically in your default browser (with *Live Editing* enabled).
 
 Happy coding!
 
@@ -66,6 +80,3 @@ The code style relies on [Prettier](https://prettier.io).
 ## Licensing
 
 [MIT License](LICENSE)
-
-
-

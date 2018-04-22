@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><title id="title">Fressen -</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Review of restaurant"><style>:root {
+       background: #f6f6f6;
+       color: #212121;
+   }
+   body {
+       margin: 0;
+   }
+   body,
+   td,
+   th,
+   p {
+       font-family: Lato, Arial, Helvetica, sans-serif;
+       font-size: 16px;
+       line-height: 1.2em;
+   }
+   a,
+   button {
+       color: #212121;
+       min-height: 48px;
+       min-width: 48px;
+       text-decoration: none;
+   }
+   a:hover,
+   a:focus {
+       text-decoration: underline;
+   }
+   button {
+       background-color: inherit;
+       border: 0;
+       cursor: pointer;
+   }
+   button:hover,
+   button:focus {
+       color: #fff;
+   }
+   img,
+   embed,
+   object,
+   video {
+       max-width: 100%;
+   }
+   #map img {
+       max-height: unset;
+   }
+   #map button {
+       min-height: 0;
+       min-width: 0;
+   }
+   nav {
+       display: flex;
+   }
+   nav,
+   footer {
+       background-color: #2177c4;
+       color: #fff;
+       padding: 0.5rem;
+       text-align: center;
+       text-transform: uppercase;
+   }
+   nav h1 {
+       flex-grow: 1;
+   }
+   nav a,
+   footer a {
+       color: #fff;
+       text-decoration: none;
+   }
+   nav a:hover,
+   footer a:hover,
+   nav a:focus,
+   footer a:focus {
+       color: #212121;
+       text-decoration: underline;
+   }</style><script>function toggleHours(evt) {
+       const elem = document.getElementById('operating-hours-all');
+       const arrow = document.getElementById('arrow');
+       let elemNewValue = 'block';
+       let arrowNewValue = 'down';
+       if (elem.style.display && elem.style.display !== 'none') {
+           elemNewValue = 'none';
+           arrowNewValue = 'left';
+       }
+       elem.style.display = elemNewValue;
+       arrow.textContent = `keyboard_arrow_${arrowNewValue}`;
+   }
+
+   function openMaps(name, address) {
+       window.open(`https://www.google.com/maps/search/?api=1&query=${name},${address}`, '_blank');
+   }
+
+   function goHome() {
+       let subfolder = window.location.origin === 'https://volcain-io.github.io' ? 'fressen/' : '';
+       window.location.assign(`${window.location.origin}/${subfolder}`);
+   }</script><meta name="theme-color" content="#2177c4"><link rel="manifest" href="manifest.json"></head><body><header><nav><button onclick="goHome();" aria-label="Go back"><img alt="Back arrow icon" src="./img/back.svg"></button><h1 id="name"></h1></nav><ul class="breadcrumb" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li id="breadcrumb-name"></li></ul></header><main id="maincontent"><section id="restaurant-container" class="restaurant"></section><section id="reviews-container" class="reviews"><h2 class="text-center">Reviews</h2><div id="reviews"></div></section></main><footer id="footer">Copyright (c) 2018 &middot; <a href="/"><strong>Fressen</strong> </a>&middot; All Rights Reserved</footer><script type="text/template" id="restaurant-template"><div class="single-flex">
+      <h2 class="neighborhood">
+        <span id="neighborhood-name"></span>
+        <small id="address" class="address">{address}</small>
+      </h2>
+      <button onclick="openMaps(`{name}`,`{address}`)" aria-label="Go to Google Maps">
+        <img alt="Redirect to Google Map" src="./img/directions.svg">
+      </button>
+    </div>
+    <div class="single-flex">
+      <p class="cuisine" aria-label="{cuisine-name} cuisine">Cuisine: <span id="cuisine-name"></span></p>
+      <p class="single-rating" aria-label="Overall rating is {rating}">Rating: {rating}</p>
+    </div>
+    <div class="single-card" id="restaurant-{id}" aria-label="Place called {name}">
+      <div class="grid">
+        <img id="img"
+             src="./img/restaurants/{id}@2x.jpg"
+             srcset="./img/restaurants/{id}.jpg 400w, ./img/restaurants/{id}@2x.jpg 800w"
+             sizes="(max-width: 600px) 100vw, 50vw"
+             alt="Image of {name} Restaurant">
+        <div id="map" class="single-map" role="application"></div>
+        <button onclick="toggleHours(event)" aria-label="Show/hide Operating Hours">
+          <span style="font-size: 1.5rem;">Operating Hours</span>
+          <i class="material-icons" id="arrow">keyboard_arrow_left</i>
+        </button>
+        <table id="operating-hours-all" aria-label="Operating Hours"></table>
+      </div>
+    </div></script><script type="text/template" id="review-template"><div class="single-card" id="review-{id}" aria-label="Review by {name}">
+      <div class="grid">
+        <i class="material-icons rem-3" aria-label="User icon">portrait</i>
+        <h3>{name}</h3>
+        <p class="date" aria-label="Publishing date">{date}</p>
+        <p class="single-rating" aria-label="Users rating">Rating: {rating}</p>
+        <p class="comments" aria-label="Users comment">{comments}</p>
+      </div>
+    </div></script><script type="text/template" id="empty-view"><div class="empty" id="empty">
+      <h3>No reviews yet!</h3>
+    </div></script><script src="app.bundle.js"></script><script async defer="defer" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap"></script><noscript id="deferred-styles"><link rel="stylesheet" href="css/restaurant.css"><link rel="stylesheet" media="(min-width: 600px)" href="css/restaurant-min-600px.css"><link rel="stylesheet" media="(min-width: 850px)" href="css/restaurant-min-850px.css"><link rel="stylesheet" media="(min-width: 1000px)" href="css/restaurant-min-1000px.css"></noscript><script>var loadDeferredStyles = function() {
+       var addStylesNode = document.getElementById("deferred-styles");
+       var replacement = document.createElement("div");
+       replacement.innerHTML = addStylesNode.textContent;
+       document.body.appendChild(replacement);
+       addStylesNode.parentElement.removeChild(addStylesNode);
+   };
+   var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+   if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
+   else window.addEventListener('load', loadDeferredStyles);</script></body></html>

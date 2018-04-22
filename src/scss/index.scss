@@ -1,0 +1,87 @@
+$black-squeeze: #f5f8fb;
+$iron: #d2d3d3;
+$link-water: #dae6f3;
+$mine-shaft: #212121;
+$quincy: #57482b;
+$white: #fff;
+
+// +++ HORIZONTAL SCROLLING +++
+.horizontal-scrolling {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 100%;
+
+  > .card {
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+}
+
+// +++ CARD +++
+.card {
+  background: $white;
+  border: 1px solid $iron;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background: $black-squeeze;
+  }
+
+  &.selected {
+    background-color: $link-water;
+  }
+
+  &.small {
+    height: 96px;
+    padding: 1rem;
+    width: 96px;
+
+    img {
+      height: 64px;
+    }
+  }
+
+  &.large {
+    height: 100%;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+    width: 256px;
+
+    img {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      height: 152px;
+      width: 100%;
+    }
+
+    h3,
+    p {
+      margin-left: 1rem;
+      margin-right: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  > .inner-places p {
+    color: $quincy;
+
+    .more-details {
+      color: $mine-shaft;
+    }
+  }
+
+  > .inner-neighborhood,
+  > .inner-cuisine {
+    align-items: center;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-rows: 1fr 0;
+    justify-items: center;
+  }
+}

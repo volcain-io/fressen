@@ -1,0 +1,43 @@
+{
+  "lang": "en",
+  "dir": "ltr",
+  "name": "Fressen",
+  "description": "Restaurant reviews app",
+  "short_name": "Fressen",
+  "icons": [
+    {
+      "src": "img/icon_mdpi.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon_hdpi.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon_xhdpi.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon_xxhdpi.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon_xxxhdpi.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon_hi_res_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "?utm_source=homescreen",
+  "background_color": "#f6f6f6",
+  "theme_color": "#2177c4",
+  "display": "standalone"
+}

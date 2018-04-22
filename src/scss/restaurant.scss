@@ -1,0 +1,151 @@
+$boulder: #707070;
+$curious-blue: #2177c4;
+$fruit-salad: #357d37;
+$quincy: #57482b;
+$white: #fff;
+
+// +++ CENTER TEXT +++
+.text-center {
+  text-align: center;
+}
+
+// +++ BREADCRUMB +++
+.breadcrumb {
+  border: 1px solid $curious-blue;
+  list-style: none;
+  margin: 0;
+  padding-left: 0.5rem;
+
+  li {
+    display: inline;
+  }
+
+  + li::before {
+    content: '/\00a0';
+    padding: 0.5rem;
+  }
+}
+// +++ ERROR
+.error {
+  color: $white;
+  text-align: center;
+  text-transform: uppercase;
+}
+// +++ FLEX +++
+.single-flex {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0.5rem;
+}
+
+// +++ MAP +++
+.single-map {
+  height: 30vh;
+  width: 100%;
+}
+
+// +++ RATING +++
+.single-rating {
+  background-color: unset;
+  color: $fruit-salad;
+  font-weight: bold;
+  padding: unset;
+  text-align: unset;
+}
+
+// +++ CARD +++
+.single-card {
+  background: $white;
+}
+
+// +++ ADDRESS +++
+.address {
+  color: $quincy;
+  display: block;
+  margin-top: 1rem;
+}
+
+// +++ CUISINE +++
+.cuisine {
+  color: $boulder;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+// +++ GRID LAYOUT +++
+.grid {
+  align-items: center;
+  display: grid;
+  grid-gap: 0.5rem;
+  justify-content: space-around;
+  justify-items: center;
+  padding: 0;
+
+  img {
+    margin: 0 auto;
+    max-width: 800px;
+    width: calc(100vw - 1rem);
+  }
+}
+
+// +++ RESTAURANT +++
+.restaurant,
+.reviews {
+  margin: 0 auto;
+  max-width: calc(5 * 256px + 5rem);
+}
+
+.restaurant {
+  table {
+    display: none;
+  }
+
+  button {
+    &:hover,
+    &:focus {
+      color: $curious-blue;
+    }
+  }
+}
+
+// +++ REVIEWS +++
+.reviews {
+  .grid {
+    display: grid;
+    grid-template-columns: 48px auto;
+    grid-template-rows: 48px repeat(2, 1rem) auto;
+    padding: 0.5rem;
+  }
+
+  img {
+    grid-column: 1;
+    grid-row: 1;
+    height: 48px;
+    margin: 0 auto;
+  }
+
+  h3 {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .date {
+    color: $boulder;
+    font-weight: bold;
+    grid-column: 1 / 3;
+    grid-row: 2;
+  }
+
+  .rating {
+    font-size: 1rem;
+    grid-column: 1 / 3;
+    grid-row: 3;
+  }
+
+  .comments {
+    grid-column: 1 / 3;
+    grid-row: 4;
+  }
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"><head><title>FRESSEN</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Reviews of selected restaurant near New York, NY, US"><style>:root {
+       background: #f6f6f6;
+       color: #212121;
+   }
+   body {
+       margin: 0;
+   }
+   body,
+   td,
+   th,
+   p {
+       font-family: Abel, Verdana, Helvetica, sans-serif;
+       font-size: 16px;
+       line-height: 1.2em;
+   }
+   a,
+   button {
+       color: #212121;
+       min-height: 48px;
+       min-width: 48px;
+       text-decoration: none;
+   }
+   a:hover,
+   a:focus {
+       text-decoration: underline;
+   }
+   button {
+       background-color: inherit;
+       border: 0;
+       cursor: pointer;
+   }
+   button:hover,
+   button:focus {
+       color: #fff;
+   }
+   img,
+   embed,
+   object,
+   video {
+       max-width: 100%;
+   }
+   #map img {
+       max-height: unset;
+   }
+   #map button {
+       min-height: 0;
+       min-width: 0;
+   }
+   nav {
+       display: flex;
+   }
+   nav,
+   footer {
+       background-color: #2177c4;
+       color: #fff;
+       padding: 0.5rem;
+       text-align: center;
+       text-transform: uppercase;
+   }
+   nav img {
+       opacity: 0.5;
+       width: 48px;
+   }
+   nav h1 {
+       flex-grow: 1;
+   }
+   nav button {
+       color: #fff;
+   }
+   nav a,
+   footer a {
+       color: #fff;
+       text-decoration: none;
+   }
+   nav a:hover,
+   footer a:hover,
+   nav a:focus,
+   footer a:focus {
+       color: #212121;
+       text-decoration: underline;
+   }
+   .flex {
+       display: flex;
+       flex-wrap: wrap;
+       justify-content: center;
+       margin: 0 auto;
+       max-width: calc(5 * 256px + 5rem);
+   }
+   .empty {
+       text-align: center;
+   }
+   .map {
+       height: 200px;
+       width: 100%;
+   }
+   .rating {
+       background-color: #357d37;
+       border-radius: 5px;
+       color: #fff;
+       font-weight: bold;
+       padding: 0.4rem;
+       position: absolute;
+       text-align: center;
+       width: 2rem;
+   }
+   .filter {
+       margin: 0 0 1rem 1rem;
+       text-align: center;
+   }
+   .filter-header {
+       color: #707070;
+       font-size: 1.1rem;
+       font-weight: 400;
+       text-transform: uppercase;
+   }
+   .hide {
+       display: none !important;
+   }</style><meta name="theme-color" content="#2177c4"><link rel="manifest" href="manifest.json"></head><body><header><nav><h1><a href="/">Fressen</a></h1></nav></header><main id="maincontent"><section class="map hide" id="map" role="application"></section><section class="filter"><h2 class="filter-header">I'd like to eat in</h2><div class="horizontal-scrolling" id="neighborhoods" role="listbox" aria-orientation="horizontal"></div></section><section class="filter"><h2 class="filter-header">I'd like to eat</h2><div class="horizontal-scrolling" id="cuisines" role="listbox" aria-orientation="horizontal"></div></section><section class="filter"><h2 class="filter-header">Nearby places</h2><div class="flex" id="restaurants" role="listbox"></div></section></main><footer id="footer">Copyright (c) 2018 &middot; <a href="/"><strong>Fressen</strong> </a>&middot; All Rights Reserved</footer><script type="text/template" id="neighborhood-template"><div class="card small" id="neighborhood-{id}" role="option" aria-label="{name} Neighborhood" aria-selected="false">
+      <div class="inner-neighborhood">
+        <img src="./img/neighborhoods/{icon}" alt="{altText}" />
+          <h3><a href="#">{name}</a></h3>
+      </div>
+    </div></script><script type="text/template" id="cuisine-template"><div class="card small" id="cuisine-{id}" role="option" aria-label="{name} Cuisine" aria-selected="false">
+      <div class="inner-cuisine">
+        <img src="./img/cuisines/{icon}" alt="{altText}" />
+        <h3><a href="#">{name}</a></h3>
+      </div>
+    </div></script><script type="text/template" id="restaurant-template"><div class="card large" id="restaurant-{id}" role="option" aria-label="Place called {name}" aria-selected="false">
+      <div class="inner-places">
+        <span class="rating" id="rating-{id}">{rating}</span>
+        <img class="restaurant-img" alt="Image of {name} Restaurant"
+             src="./img/placeholder.png"
+             data-srcset="./img/restaurants/{id}-small.jpg 1x, ./img/restaurants/{id}-small@2x.jpg 2x"
+             sizes="">
+        <h3><a href="#">{name}</a></h3>
+        <p>{address}</p>
+        <p class="more-details">Todays Operating Hours</p>
+        <p class="more-details">{operatingHours}</p>
+      </div>
+    </div></script><script type="text/template" id="empty-view"><div class="empty" id="empty">
+      <img alt="Restaurant icon" src="./img/restaurant.svg">
+      <h3>No restaurants found. Try again!</h3>
+    </div></script><script async src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script><script src="app.bundle.js"></script><script async defer="defer" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap"></script><noscript id="deferred-styles"><link rel="stylesheet" href="css/index.css"></noscript><script>var loadDeferredStyles = function() {
+       var addStylesNode = document.getElementById("deferred-styles");
+       var replacement = document.createElement("div");
+       replacement.innerHTML = addStylesNode.textContent;
+       document.body.appendChild(replacement);
+       addStylesNode.parentElement.removeChild(addStylesNode);
+    };
+    var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
+    else window.addEventListener('load', loadDeferredStyles);</script></body></html>
