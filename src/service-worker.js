@@ -9,17 +9,15 @@ self.addEventListener('install', event => {
     '.',
     './index.html',
     './restaurant.html',
-    './css/app.bundle.css',
-    './app.bundle.js',
-    'https://fonts.gstatic.com/s/lato/v14/S6uyw4BMUTPHjxAwXjeu.woff2',
-    'https://fonts.gstatic.com/s/lato/v14/S6uyw4BMUTPHjx4wXg.woff2',
-    'https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh50XSwaPGR_p.woff2',
-    'https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh50XSwiPGQ.woff2',
-    'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2'
+    './css/index.css',
+    './css/restaurant.css',
+    './css/restaurant-min-600px.css',
+    './css/restaurant-min-850px.css',
+    './css/restaurant-min-1000px.css',
+    './app.bundle.js'
   ];
   const foreignUrlsToPrefetch = [
-    'https://fonts.googleapis.com/css?family=Lato:400,900',
-    'https://fonts.googleapis.com/icon?family=Material+Icons',
+    'https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver',
     `https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap`
   ];
 
@@ -77,7 +75,6 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     caches.match(event.request).then(cached => {
-      console.log(cached, event.request);
       return cached || fetch(event.request);
     })
   );
