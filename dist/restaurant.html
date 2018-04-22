@@ -71,17 +71,23 @@
    footer a:focus {
        color: #212121;
        text-decoration: underline;
+   }
+   .material-icons {
+       max-width: 24px;
    }</style><script>function toggleHours(evt) {
        const elem = document.getElementById('operating-hours-all');
        const arrow = document.getElementById('arrow');
        let elemNewValue = 'block';
+       let arrowOldValue = 'left';
        let arrowNewValue = 'down';
        if (elem.style.display && elem.style.display !== 'none') {
            elemNewValue = 'none';
            arrowNewValue = 'left';
+           arrowOldValue = 'down';
        }
        elem.style.display = elemNewValue;
-       arrow.textContent = `keyboard_arrow_${arrowNewValue}`;
+       arrow.src = arrow.src.replace(`arrow_${arrowOldValue}`, `arrow_${arrowNewValue}`);
+       arrow.alt = arrow.alt.replace(`arrow_${arrowOldValue}`, `arrow_${arrowNewValue}`);
    }
 
    function openMaps(name, address) {
@@ -91,13 +97,13 @@
    function goHome() {
        let subfolder = window.location.origin === 'https://volcain-io.github.io' ? 'fressen/' : '';
        window.location.assign(`${window.location.origin}/${subfolder}`);
-   }</script><meta name="theme-color" content="#2177c4"><link rel="manifest" href="manifest.json"></head><body><header><nav><button onclick="goHome();" aria-label="Go back"><img alt="Back arrow icon" src="./img/back.svg"></button><h1 id="name"></h1></nav><ul class="breadcrumb" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li id="breadcrumb-name"></li></ul></header><main id="maincontent"><section id="restaurant-container" class="restaurant"></section><section id="reviews-container" class="reviews"><h2 class="text-center">Reviews</h2><div id="reviews"></div></section></main><footer id="footer">Copyright (c) 2018 &middot; <a href="/"><strong>Fressen</strong> </a>&middot; All Rights Reserved</footer><script type="text/template" id="restaurant-template"><div class="single-flex">
+   }</script><meta name="theme-color" content="#2177c4"><link rel="manifest" href="manifest.json"></head><body><header><nav><button onclick="goHome();" aria-label="Go back"><img alt="Back arrow icon" src="./img/material-icons/back.svg"></button><h1 id="name"></h1></nav><ul class="breadcrumb" aria-label="Breadcrumb"><li><a href="/">Home</a></li><li id="breadcrumb-name"></li></ul></header><main id="maincontent"><section id="restaurant-container" class="restaurant"></section><section id="reviews-container" class="reviews"><h2 class="text-center">Reviews</h2><div id="reviews"></div></section></main><footer id="footer">Copyright (c) 2018 &middot; <a href="/"><strong>Fressen</strong> </a>&middot; All Rights Reserved</footer><script type="text/template" id="restaurant-template"><div class="single-flex">
       <h2 class="neighborhood">
         <span id="neighborhood-name"></span>
         <small id="address" class="address">{address}</small>
       </h2>
       <button onclick="openMaps(`{name}`,`{address}`)" aria-label="Go to Google Maps">
-        <img alt="Redirect to Google Map" src="./img/directions.svg">
+        <img alt="Redirect to Google Map" src="./img/material-icons/directions.svg">
       </button>
     </div>
     <div class="single-flex">
@@ -107,20 +113,20 @@
     <div class="single-card" id="restaurant-{id}" aria-label="Place called {name}">
       <div class="grid">
         <img id="img"
-             src="./img/restaurants/{id}@2x.jpg"
+             src="./img/restaurants/{id}-small.jpg"
              srcset="./img/restaurants/{id}.jpg 400w, ./img/restaurants/{id}@2x.jpg 800w"
              sizes="(max-width: 600px) 100vw, 50vw"
              alt="Image of {name} Restaurant">
         <div id="map" class="single-map" role="application"></div>
         <button onclick="toggleHours(event)" aria-label="Show/hide Operating Hours">
           <span style="font-size: 1.5rem;">Operating Hours</span>
-          <i class="material-icons" id="arrow">keyboard_arrow_left</i>
+          <img id="arrow" class="material-icons" src="./img/material-icons/keyboard_arrow_left.svg" alt="Arrow left icon">
         </button>
         <table id="operating-hours-all" aria-label="Operating Hours"></table>
       </div>
     </div></script><script type="text/template" id="review-template"><div class="single-card" id="review-{id}" aria-label="Review by {name}">
       <div class="grid">
-        <i class="material-icons rem-3" aria-label="User icon">portrait</i>
+        <img src="./img/material-icons/portrait.svg" alt="User portrait">
         <h3>{name}</h3>
         <p class="date" aria-label="Publishing date">{date}</p>
         <p class="single-rating" aria-label="Users rating">Rating: {rating}</p>

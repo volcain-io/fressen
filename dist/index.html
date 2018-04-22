@@ -79,6 +79,10 @@
        color: #212121;
        text-decoration: underline;
    }
+   main {
+       max-width: 1000px;
+       margin: 0 auto;
+   }
    .flex {
        display: flex;
        flex-wrap: wrap;
@@ -92,6 +96,7 @@
    .map {
        height: 200px;
        width: 100%;
+       border: 1px solid #d2d3d3;
    }
    .rating {
        background-color: #357d37;
@@ -128,7 +133,7 @@
     </div></script><script type="text/template" id="restaurant-template"><div class="card large" id="restaurant-{id}" role="option" aria-label="Place called {name}" aria-selected="false">
       <div class="inner-places">
         <span class="rating" id="rating-{id}">{rating}</span>
-        <img class="restaurant-img" alt="Image of {name} Restaurant"
+        <img class="restaurant-img" alt="View of {name} Restaurant"
              src="./img/placeholder.png"
              data-srcset="./img/restaurants/{id}-small.jpg 1x, ./img/restaurants/{id}-small@2x.jpg 2x"
              sizes="">
@@ -138,7 +143,7 @@
         <p class="more-details">{operatingHours}</p>
       </div>
     </div></script><script type="text/template" id="empty-view"><div class="empty" id="empty">
-      <img alt="Restaurant icon" src="./img/restaurant.svg">
+      <img alt="Restaurant icon" src="./img/material-icons/restaurant.svg">
       <h3>No restaurants found. Try again!</h3>
     </div></script><script async src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script><script src="app.bundle.js"></script><script async defer="defer" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap"></script><noscript id="deferred-styles"><link rel="stylesheet" href="css/index.css"></noscript><script>var loadDeferredStyles = function() {
        var addStylesNode = document.getElementById("deferred-styles");

@@ -18,11 +18,11 @@ $white: #fff;
 
   li {
     display: inline;
-  }
 
-  + li::before {
-    content: '/\00a0';
-    padding: 0.5rem;
+    &:nth-child(1)::after {
+      content: '/\00a0';
+      padding: 0.5rem;
+    }
   }
 }
 // +++ ERROR
@@ -84,7 +84,6 @@ $white: #fff;
 
   img {
     margin: 0 auto;
-    max-width: 800px;
     width: calc(100vw - 1rem);
   }
 }

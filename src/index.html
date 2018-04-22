@@ -88,6 +88,10 @@
        color: #212121;
        text-decoration: underline;
    }
+   main {
+       max-width: 1000px;
+       margin: 0 auto;
+   }
    .flex {
        display: flex;
        flex-wrap: wrap;
@@ -101,6 +105,7 @@
    .map {
        height: 200px;
        width: 100%;
+       border: 1px solid #d2d3d3;
    }
    .rating {
        background-color: #357d37;
@@ -210,7 +215,7 @@
     <div class="card large" id="restaurant-{id}" role="option" aria-label="Place called {name}" aria-selected="false">
       <div class="inner-places">
         <span class="rating" id="rating-{id}">{rating}</span>
-        <img class="restaurant-img" alt="Image of {name} Restaurant"
+        <img class="restaurant-img" alt="View of {name} Restaurant"
              src="./img/placeholder.png"
              data-srcset="./img/restaurants/{id}-small.jpg 1x, ./img/restaurants/{id}-small@2x.jpg 2x"
              sizes="">
@@ -224,7 +229,7 @@
   <!-- Empty list template -->
   <script type="text/template" id="empty-view">
     <div class="empty" id="empty">
-      <img alt="Restaurant icon" src="./img/restaurant.svg">
+      <img alt="Restaurant icon" src="./img/material-icons/restaurant.svg">
       <h3>No restaurants found. Try again!</h3>
     </div>
   </script>
