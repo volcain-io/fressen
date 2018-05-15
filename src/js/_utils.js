@@ -22,11 +22,13 @@ export const getId = elem => {
   const neighborhood = 'neighborhood-';
   const cuisine = 'cuisine-';
   const restaurant = 'restaurant-';
+  const favorite = 'favorite-';
   if (elem) {
     if (elem.id) {
       if (elem.id.startsWith(neighborhood)) return elem.id.replace(neighborhood, '');
       if (elem.id.startsWith(cuisine)) return elem.id.replace(cuisine, '');
       if (elem.id.startsWith(restaurant)) return elem.id.replace(restaurant, '');
+      if (elem.id.startsWith(favorite)) return elem.id.replace(favorite, '');
 
       return getId(elem.parentElement);
     }

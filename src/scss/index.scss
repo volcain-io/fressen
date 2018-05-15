@@ -26,13 +26,19 @@ $white: #fff;
   border-radius: 5px;
   cursor: pointer;
 
-  &:hover,
-  &:focus {
-    background: $black-squeeze;
-  }
-
   &.selected {
     background-color: $link-water;
+  }
+
+  button {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    width: 100%;
+
+    &:hover,
+    &:focus {
+      background: $black-squeeze;
+    }
   }
 
   &.small {
@@ -51,7 +57,7 @@ $white: #fff;
     margin-bottom: 1rem;
     width: 256px;
 
-    img {
+    > img {
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       height: 152px;
@@ -68,11 +74,20 @@ $white: #fff;
     }
   }
 
-  > .inner-places p {
-    color: $quincy;
+  > .inner-places {
+    padding-bottom: 0.5rem;
 
-    .more-details {
-      color: $mine-shaft;
+    &:hover,
+    &:focus {
+      background: $black-squeeze;
+    }
+
+    p {
+      color: $quincy;
+
+      .more-details {
+        color: $mine-shaft;
+      }
     }
   }
 

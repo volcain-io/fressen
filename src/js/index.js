@@ -41,6 +41,28 @@ class RestaurantList {
   }
 
   /**
+   * Toggle favorites icon to mark the current state
+   */
+  _updateFavoritesIcon(id) {
+    DBHelper.isFavorite(id)
+      .then(r => {
+        const isFavorite = r.is_favorite;
+        const elem = document.getElementById(`favorite-${r.id}`);
+        const txtAddOrRemove = isFavorite ? 'Remove' : 'Add';
+        const txtToOrFrom = isFavorite ? 'from' : 'to';
+        const description = `${txtAddOrRemove} ${r.name} restaurant ${txtToOrFrom} favorites`;
+        elem.setAttribute('aria-label', description);
+        const img = elem.children[0];
+        const icon = isFavorite ? 'favorite.svg' : 'favorite-border.svg';
+        img.setAttribute('alt', description);
+        img.setAttribute('src', `./img/material-icons/${icon}`);
+      })
+      .catch(error => {
+        console.error(`Couldn't add restaurant to favorites: `, error);
+      });
+  }
+
+  /**
    * Fetch all neighborhoods and set their HTML.
    */
   fetchNeighborhoods() {
@@ -155,6 +177,7 @@ class RestaurantList {
     for (let r of this._restaurants) {
       const rating = DBHelper.calculateRatingByReviews(r.reviews);
       const operatingHours = DBHelper.getOperatingHours(r.operating_hours);
+      const isFavorite = r.is_favorite;
 
       // fill template with data
       listHtml += template
@@ -162,7 +185,10 @@ class RestaurantList {
         .replace(/{name}/g, r.name)
         .replace(/{address}/g, r.address)
         .replace(/{operatingHours}/g, operatingHours)
-        .replace(/{rating}/g, rating);
+        .replace(/{rating}/g, rating)
+        .replace(/{txtAddOrRemove}/g, isFavorite ? 'Remove' : 'Add')
+        .replace(/{txtToOrFrom}/g, isFavorite ? 'from' : 'to')
+        .replace(/{favoriteIcon}/g, isFavorite ? 'favorite' : 'favorite-border');
     }
 
     const restaurantList = document.getElementById('restaurants');
@@ -183,9 +209,26 @@ class RestaurantList {
       event.preventDefault();
 
       let id = getId(event.target);
-      // navigate to info page
-      if (id > 0) window.location.replace(`restaurant.html?id=${id}`);
+      // toggle favorites
+      if (
+        event.target.id.startsWith('favorite-') ||
+        event.target.parentElement.id.startsWith('favorite-')
+      ) {
+        DBHelper.toggleFavorites(id)
+          .then(() => {
+            this._updateFavoritesIcon(id);
+          })
+          .catch(error => {
+            console.error('Transaction failed: ', error);
+          });
+      } else if (id > 0) window.location.replace(`restaurant.html?id=${id}`);
+      else {
+      }
     });
+
+    // requestAnimationFrame(() => {
+    //   this._fillRestaurantsHTML();
+    // });
   }
 
   /**
@@ -202,7 +245,11 @@ class RestaurantList {
         } else {
           this._resetRestaurants();
           this._restaurants = restaurants;
-          requestAnimationFrame(this._fillRestaurantsHTML.bind(this));
+          this._fillRestaurantsHTML();
+          // requestAnimationFrame(() => {
+          //   this._fillRestaurantsHTML();
+          // });
+          // requestAnimationFrame(this._fillRestaurantsHTML.bind(this));
         }
       }
     );

@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import idb from 'idb';
 
 const IDB_VERSION = 1;
@@ -51,9 +52,6 @@ class DBHelper {
         }
 
         return tx.complete;
-      })
-      .then(() => {
-        console.log('Transaction successful');
       })
       .catch(error => {
         console.error('Transaction failed: ', error);
@@ -173,7 +171,7 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
-        const restaurant = restaurants.find(r => r.id == id);
+        const restaurant = restaurants.find(r => r.id === parseInt(id));
         if (restaurant) {
           // Got the restaurant
           callback(null, restaurant);
@@ -314,6 +312,40 @@ class DBHelper {
    */
   static urlForRestaurant(restaurant) {
     return `./restaurant.html?id=${restaurant.id}`;
+  }
+
+  /**
+   * Toggle favorites status
+   */
+  static toggleFavorites(id) {
+    return DBHelper.dbPromise.then(async db => {
+      if (!db) return Promise.reject('db undefined');
+
+      const store = 'restaurants';
+      const tx = db.transaction(store, 'readwrite');
+      const dataStore = tx.objectStore(store);
+
+      const obj = await dataStore.get(parseInt(id));
+      obj.is_favorite = !obj.is_favorite;
+      dataStore.put(obj);
+
+      return tx.complete;
+    });
+  }
+
+  /**
+   * Get status of restaurant
+   */
+  static isFavorite(id) {
+    return DBHelper.dbPromise.then(db => {
+      if (!db) return Promise.reject('db undefined');
+
+      const store = 'restaurants';
+      const tx = db.transaction(store);
+      const dataStore = tx.objectStore(store);
+
+      return dataStore.get(parseInt(id));
+    });
   }
 
   /**
