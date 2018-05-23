@@ -2,9 +2,10 @@ import DBHelper from './_dbhelper.js';
 import { updateFavorite } from './_utils.js';
 
 class BtnFavorite {
-  constructor(id, flag) {
+  constructor(id, flag, color = 'red') {
     this.id = id;
     this.flag = flag;
+    this.color = color;
   }
 
   // Node represenation
@@ -54,7 +55,7 @@ class BtnFavorite {
     const isFavorite = this.flag === 'true';
     const icon = isFavorite ? 'favorite' : 'favorite-border';
     img.setAttribute('alt', description);
-    img.setAttribute('src', `./img/material-icons/${icon}.svg`);
+    img.setAttribute('src', `./img/material-icons/${icon}-${this.color}.svg`);
 
     return img;
   }
