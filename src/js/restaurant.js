@@ -1,5 +1,6 @@
 import DBHelper from './_dbhelper.js';
 import BtnFavorite from './_btn-favorite.js';
+import BtnAdd from './_btn-add.js';
 import { calculateRatingByReviews, convertToHuman, getParameterByName } from './_utils.js';
 
 class Restaurant {
@@ -78,6 +79,8 @@ class Restaurant {
     this._fillReviewsHTML();
     // fill favorite button
     this._fillBtnFavorite();
+    // fill add button
+    this._fillBtnAdd();
   }
 
   /**
@@ -176,6 +179,15 @@ class Restaurant {
       .item(0)
       .appendChild(btnFavorite.node);
     btnFavorite.addEventListener();
+  }
+
+  _fillBtnAdd() {
+    const btnAdd = new BtnAdd(this._restaurant.id);
+    document
+      .getElementsByTagName('main')
+      .item(0)
+      .appendChild(btnAdd.node);
+    btnAdd.addEventListener();
   }
 }
 

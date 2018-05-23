@@ -9,6 +9,32 @@ $white: #fff;
   text-align: center;
 }
 
+// +++ BIGGER TEXT +++
+.text-bigger {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+// +++ SUBMIT FORM +++
+.form-grid {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 100px 2fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  margin: 1rem;
+}
+
+.form-layer {
+  background: $white;
+  display: none;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
 // +++ BREADCRUMB +++
 .breadcrumb {
   border: 1px solid $curious-blue;
@@ -25,7 +51,7 @@ $white: #fff;
     }
   }
 }
-// +++ ERROR
+// +++ ERROR +++
 .error {
   color: $white;
   text-align: center;
@@ -152,5 +178,16 @@ $white: #fff;
 button {
   img {
     width: 48px;
+  }
+
+  // +++ ADD REVIEW +++
+  &.btn-review {
+    background: $curious-blue;
+    border-radius: 50%;
+    bottom: 1rem;
+    color: $white;
+    position: fixed;
+    right: 1rem;
+    z-index: 9998;
   }
 }
