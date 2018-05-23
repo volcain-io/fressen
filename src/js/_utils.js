@@ -172,7 +172,7 @@ export const getOperatingHours = operatingHours => {
 
 export const convertToHuman = unixTimeStamp => {
   if (Number.isInteger(unixTimeStamp)) {
-    return new Date(unixTimeStamp).toLocaleDateString();
+    return new Date(unixTimeStamp).toLocaleString();
   }
 
   return '-';
