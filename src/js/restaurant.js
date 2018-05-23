@@ -1,6 +1,6 @@
 import DBHelper from './_dbhelper.js';
 import BtnFavorite from './_btn-favorite.js';
-import { calculateRatingByReviews, getParameterByName } from './_utils.js';
+import { calculateRatingByReviews, convertToHuman, getParameterByName } from './_utils.js';
 
 class Restaurant {
   constructor() {
@@ -32,21 +32,17 @@ class Restaurant {
         document.getElementById('title').textContent += restaurant.name;
         document.getElementById('name').textContent = restaurant.name;
         document.getElementById('breadcrumb-name').textContent = restaurant.name;
-        this._fillRestaurantHTML();
-        callback(null, this._restaurant);
+        DBHelper.fetchReviewsByRestaurantId(this._restaurant.id, (error, reviews) => {
+          if (error) {
+            console.error(error);
+          } else {
+            this._reviews = reviews;
+          }
+          this._fillRestaurantHTML();
+          callback(null, this._restaurant);
+        });
       });
     }
-  }
-
-  fetchReviews() {
-    DBHelper.fetchAllReviews((error, reviews) => {
-      if (error) {
-        // Got an error
-        console.error(error);
-      } else {
-        this._reviews = reviews;
-      }
-    });
   }
 
   /**
@@ -57,9 +53,7 @@ class Restaurant {
     const r = this._restaurant;
 
     let rHTML = '';
-    const rating = calculateRatingByReviews(
-      this._reviews.filter(review => review.restaurant_id === r.id)
-    );
+    const rating = calculateRatingByReviews(this._reviews);
 
     // fill template with data
     rHTML += template
@@ -159,7 +153,7 @@ class Restaurant {
         rHTML += template
           .replace(/{id}/g, id++)
           .replace(/{name}/g, r.name)
-          .replace(/{date}/g, r.date)
+          .replace(/{date}/g, convertToHuman(r.updatedAt))
           .replace(/{rating}/g, r.rating)
           .replace(/{comments}/g, r.comments);
       }
@@ -176,7 +170,7 @@ class Restaurant {
   }
 
   _fillBtnFavorite() {
-    const btnFavorite = new BtnFavorite(this._restaurant.id, this._restaurant.is_favorite);
+    const btnFavorite = new BtnFavorite(this._restaurant.id, this._restaurant.is_favorite, 'white');
     document
       .getElementsByTagName('nav')
       .item(0)

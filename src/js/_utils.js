@@ -91,7 +91,6 @@ export const initRestaurant = () => {
       }
     }
   });
-  r.fetchReviews();
 };
 
 export const loadImage = image => {
@@ -169,4 +168,12 @@ export const getOperatingHours = operatingHours => {
     return hours.replace(',', ' &');
   }
   return 'N.A.';
+};
+
+export const convertToHuman = unixTimeStamp => {
+  if (Number.isInteger(unixTimeStamp)) {
+    return new Date(unixTimeStamp).toLocaleDateString();
+  }
+
+  return '-';
 };

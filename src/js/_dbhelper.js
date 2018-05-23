@@ -330,6 +330,27 @@ class DBHelper {
   }
 
   /**
+   * Fetch reviews by restaurant id with proper error handling.
+   */
+  static fetchReviewsByRestaurantId(restaurantId, callback) {
+    // Fetch all reviews
+    DBHelper.fetchAllReviews((error, reviews) => {
+      if (error) {
+        // Got an error
+        callback(error, null);
+      } else {
+        let results = reviews;
+        // filter
+        if (restaurantId != -1) {
+          // filter by restaurant
+          results = results.filter(r => r.restaurant_id == restaurantId);
+        }
+        callback(null, results);
+      }
+    });
+  }
+
+  /**
    * Fetch all neighborhoods with proper error handling.
    */
   static fetchNeighborhoods(callback) {
