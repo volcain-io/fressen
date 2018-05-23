@@ -7,6 +7,7 @@ class BtnFavorite {
     this.flag = flag;
   }
 
+  // Node represenation
   get node() {
     return this._createBtn();
   }
@@ -26,6 +27,9 @@ class BtnFavorite {
     this.addEventListener();
   }
 
+  /**
+   * Create button
+   */
   _createBtn() {
     const btn = document.createElement('button');
     const isFavorite = this.flag === 'true';
@@ -41,6 +45,9 @@ class BtnFavorite {
     return btn;
   }
 
+  /**
+   * Create image which is placed inside the button
+   */
   _createImg(description) {
     // img inside button element
     const img = document.createElement('img');
@@ -52,6 +59,9 @@ class BtnFavorite {
     return img;
   }
 
+  /**
+   * Update the database, cache and toggle the state of the button
+   */
   _update(event) {
     const data = document.getElementById(`favorite-${this.id}`).getAttribute('data-isfavorite');
     const invertFlag = !(data === 'true');
