@@ -1,9 +1,11 @@
 import DBHelper from './_dbhelper.js';
-import { getParameterByName } from './_utils.js';
+import BtnFavorite from './_btn-favorite.js';
+import { calculateRatingByReviews, getParameterByName } from './_utils.js';
 
 class Restaurant {
   constructor() {
     this._restaurant = '';
+    this._reviews = [];
   }
 
   /**
@@ -36,6 +38,17 @@ class Restaurant {
     }
   }
 
+  fetchReviews() {
+    DBHelper.fetchAllReviews((error, reviews) => {
+      if (error) {
+        // Got an error
+        console.error(error);
+      } else {
+        this._reviews = reviews;
+      }
+    });
+  }
+
   /**
    * Create restaurant HTML and add it to the webpage
    */
@@ -44,7 +57,9 @@ class Restaurant {
     const r = this._restaurant;
 
     let rHTML = '';
-    const rating = DBHelper.calculateRatingByReviews(r.reviews);
+    const rating = calculateRatingByReviews(
+      this._reviews.filter(review => review.restaurant_id === r.id)
+    );
 
     // fill template with data
     rHTML += template
@@ -67,6 +82,8 @@ class Restaurant {
     this._fillCuisine();
     // fill reviews
     this._fillReviewsHTML();
+    // fill favorite button
+    this._fillBtnFavorite();
   }
 
   /**
@@ -133,13 +150,12 @@ class Restaurant {
    * Create all reviews HTML and add them to the webpage.
    */
   _fillReviewsHTML() {
-    if (this._restaurant.reviews) {
-      const reviews = this._restaurant.reviews;
+    if (this._reviews) {
       const template = document.getElementById('review-template').innerHTML;
 
       let rHTML = '';
       let id = 0;
-      for (let r of reviews) {
+      for (let r of this._reviews) {
         rHTML += template
           .replace(/{id}/g, id++)
           .replace(/{name}/g, r.name)
@@ -157,6 +173,15 @@ class Restaurant {
         reviewList.innerHTML = emptyViewTempl;
       }
     }
+  }
+
+  _fillBtnFavorite() {
+    const btnFavorite = new BtnFavorite(this._restaurant.id, this._restaurant.is_favorite);
+    document
+      .getElementsByTagName('nav')
+      .item(0)
+      .appendChild(btnFavorite.node);
+    btnFavorite.addEventListener();
   }
 }
 

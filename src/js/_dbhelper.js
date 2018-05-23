@@ -1,7 +1,8 @@
 import 'babel-polyfill';
 import idb from 'idb';
+import { urlForRestaurant } from './_utils.js';
 
-const IDB_VERSION = 1;
+const IDB_VERSION = 2;
 
 /**
  * Common database helper functions.
@@ -13,14 +14,21 @@ class DBHelper {
     }
 
     return idb.open('fressen-db', IDB_VERSION, function(upgradeDb) {
-      if (!upgradeDb.objectStoreNames.contains('neighborhoods')) {
-        const neighborhoodsOS = upgradeDb.createObjectStore('neighborhoods', { keyPath: 'id' });
-      }
-      if (!upgradeDb.objectStoreNames.contains('cuisines')) {
-        const cuisinesOS = upgradeDb.createObjectStore('cuisines', { keyPath: 'id' });
-      }
-      if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-        const restaurantsOS = upgradeDb.createObjectStore('restaurants', { keyPath: 'id' });
+      switch (upgradeDb.oldVersion) {
+        case 0:
+          if (!upgradeDb.objectStoreNames.contains('neighborhoods')) {
+            upgradeDb.createObjectStore('neighborhoods', { keyPath: 'id' });
+          }
+          if (!upgradeDb.objectStoreNames.contains('cuisines')) {
+            upgradeDb.createObjectStore('cuisines', { keyPath: 'id' });
+          }
+          if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+            upgradeDb.createObjectStore('restaurants', { keyPath: 'id' });
+          }
+        case 1:
+          if (!upgradeDb.objectStoreNames.contains('reviews')) {
+            upgradeDb.createObjectStore('reviews', { keyPath: 'id' });
+          }
       }
     });
   }
@@ -35,6 +43,10 @@ class DBHelper {
 
   static addCuisines(cuisines = []) {
     DBHelper._fillIdb(cuisines, 'cuisines');
+  }
+
+  static addReviews(reviews = []) {
+    DBHelper._fillIdb(reviews, 'reviews');
   }
 
   static _fillIdb(data = [], store = 'restaurants') {
@@ -58,7 +70,7 @@ class DBHelper {
       });
   }
 
-  static _showCachedData(store = 'restaurants', callback) {
+  static _getCachedDataByStore(store = 'restaurants', callback) {
     return DBHelper.dbPromise.then(db => {
       if (!db) return Promise.reject('db undefined');
 
@@ -74,46 +86,56 @@ class DBHelper {
   }
 
   /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
+   * Database URL of restaurants.
    */
-  static get DATABASE_URL() {
+  static get DB_RESTAURANTS_REQUEST() {
     return new Request(`${DBHelper.BASE_URL}/restaurants`);
   }
 
   /**
-   * Database URL.
-   * Change this to neighborhood_types.json file location on your server.
+   * Database URL neighborhood types.
    */
-  static get DB_NEIGHBORHOOD_TYPES_URL() {
+  static get DB_NEIGHBORHOOD_TYPES_REQUEST() {
     return new Request(`${DBHelper.BASE_URL}/neighborhoods`);
   }
 
   /**
-   * Database URL.
-   * Change this to cuisine_types.json file location on your server.
+   * Database URL of cuisine types.
    */
-  static get DB_CUISINE_TYPES_URL() {
+  static get DB_CUISINE_TYPES_REQUEST() {
     return new Request(`${DBHelper.BASE_URL}/cuisines`);
+  }
+
+  /**
+   * Database URL of reviews.
+   */
+  static get DB_REVIEWS_REQUEST() {
+    return new Request(`${DBHelper.BASE_URL}/reviews`);
+  }
+
+  static _getIDBStoreNameByRequest(request) {
+    switch (request.url) {
+      case DBHelper.DB_NEIGHBORHOOD_TYPES_REQUEST.url:
+        return 'neighborhoods';
+        break;
+      case DBHelper.DB_CUISINE_TYPES_REQUEST.url:
+        return 'cuisines';
+        break;
+      case DBHelper.DB_REVIEWS_REQUEST.url:
+        return 'reviews';
+        break;
+      default:
+        return 'restaurants';
+    }
   }
 
   /**
    * Fetch wrapper
    */
-  static _fetchData(url, callback) {
-    let store;
-    switch (url.url) {
-      case DBHelper.DB_NEIGHBORHOOD_TYPES_URL.url:
-        store = 'neighborhoods';
-        break;
-      case DBHelper.DB_CUISINE_TYPES_URL.url:
-        store = 'cuisines';
-        break;
-      default:
-        store = 'restaurants';
-    }
+  static _fetchData(request, callback) {
+    const store = this._getIDBStoreNameByRequest(request);
 
-    DBHelper._showCachedData(store, callback)
+    DBHelper._getCachedDataByStore(store, callback)
       .then(data => {
         if (data && data.length > 0) {
           callback(null, data);
@@ -122,11 +144,8 @@ class DBHelper {
         }
       })
       .catch(error => {
-        fetch(url)
-          .then(response => {
-            // Got a success response from server!
-            return response.json();
-          })
+        fetch(request)
+          .then(response => response.json())
           .then(data => {
             if (data) {
               callback(null, data);
@@ -142,24 +161,62 @@ class DBHelper {
   }
 
   /**
+   * Post method wrapper
+   */
+  static _postData(request, data, callback) {
+    // const store = this._getIDBStoreNameByRequest(request);
+
+    request.body = new FormData(data);
+    request.method = 'POST';
+
+    fetch(request)
+      .then(response => response.json())
+      .then(data => callback(null, data))
+      .catch(error => callback(error, null));
+  }
+
+  /**
+   * Put method wrapper
+   */
+  static _putData(request, formElement, callback) {
+    let body = '';
+
+    if (formElement) body = new FormData(formElement);
+
+    fetch(request, { method: 'PUT', body })
+      .then(response => response.json())
+      .then(data => {
+        callback(null, data);
+      })
+      .catch(error => callback(error, null));
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    DBHelper._fetchData(DBHelper.DATABASE_URL, callback);
+    DBHelper._fetchData(DBHelper.DB_RESTAURANTS_REQUEST, callback);
   }
 
   /**
    * Fetch all neighborhoods.
    */
   static fetchNeighborhoodTypes(callback) {
-    DBHelper._fetchData(DBHelper.DB_NEIGHBORHOOD_TYPES_URL, callback);
+    DBHelper._fetchData(DBHelper.DB_NEIGHBORHOOD_TYPES_REQUEST, callback);
   }
 
   /**
    * Fetch all cuisines.
    */
   static fetchCuisinesTypes(callback) {
-    DBHelper._fetchData(DBHelper.DB_CUISINE_TYPES_URL, callback);
+    DBHelper._fetchData(DBHelper.DB_CUISINE_TYPES_REQUEST, callback);
+  }
+
+  /**
+   * Fetch all reviews.
+   */
+  static fetchReviews(callback) {
+    DBHelper._fetchData(DBHelper.DB_REVIEWS_REQUEST, callback);
   }
 
   /**
@@ -192,7 +249,7 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
-        const neighborhood = neighborhoods.find(n => n.id == id);
+        const neighborhood = neighborhoods.find(n => n.id === parseInt(id));
         if (neighborhood) {
           // Got the neigborhood
           callback(null, neighborhood);
@@ -213,13 +270,34 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
-        const cuisine = cuisines.find(c => c.id == id);
+        const cuisine = cuisines.find(c => c.id === parseInt(id));
         if (cuisine) {
           // Got the cuisine
           callback(null, cuisine);
         } else {
           // Cuisine does not exist in the database
           callback('Cuisine does not exist', null);
+        }
+      }
+    });
+  }
+
+  /**
+   * Fetch a reviews by its ID.
+   */
+  static fetchReviewsById(id, callback) {
+    // fetch all reviews with proper error handling.
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        const review = reviews.find(r => r.id === parseInt(id));
+        if (review) {
+          // Got the review
+          callback(null, review);
+        } else {
+          // Review does not exist in the database
+          callback('Review does not exist', null);
         }
       }
     });
@@ -284,40 +362,50 @@ class DBHelper {
   }
 
   /**
-   * Calculate rating by reviews
+   * Fetch all reviews with proper error handling.
    */
-  static calculateRatingByReviews(reviews) {
-    if (reviews) {
-      let rating = reviews.reduce((acc, curr) => acc + Number(curr.rating), 0) / reviews.length;
-      return rating.toFixed(1);
-    }
-    return '-';
+  static fetchAllReviews(callback) {
+    // Fetch all reviews
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        DBHelper.addReviews(reviews);
+        callback(null, reviews);
+      }
+    });
   }
 
-  /**
-   * Get operating hours of current weekday
-   */
-  static getOperatingHours(operatingHours) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    if (operatingHours) {
-      const d = new Date();
-      const hours = operatingHours[days[d.getDay()]];
-      return hours.replace(',', ' &');
-    }
-    return 'N.A.';
+  static addNewReview(data) {
+    return this._postData(DBHelper.DB_REVIEWS_REQUEST, data, null);
   }
 
-  /**
-   * Restaurant page URL.
-   */
-  static urlForRestaurant(restaurant) {
-    return `./restaurant.html?id=${restaurant.id}`;
+  static updateReview(review, callback) {
+    const { id, name, rating, comments } = review;
+    const request = new URL(`${DBHelper.DB_REVIEWS_REQUEST.url}/${id}`);
+    return this._putData(request, { name, rating, comments }, callback);
+  }
+
+  static updateReviews() {
+    DBHelper._getCachedDataByStore('reviews', null).then(reviews => {
+      return Promise.all(
+        reviews
+          .map(r => DBHelper.updateReview(r))
+          .then(response => response.json())
+          .then(data => console.log(data))
+      ).catch(err => console.error(err));
+    });
+  }
+
+  static updateFavoriteByRestaurantId(id, isFavorite, callback) {
+    const url = new URL(`${DBHelper.DB_RESTAURANTS_REQUEST.url}/${id}/?is_favorite=${isFavorite}`);
+    this._putData(url, null, callback);
   }
 
   /**
    * Toggle favorites status
    */
-  static toggleFavorites(id) {
+  static updateCachedFavoriteByRestaurantId(id, isFavorite) {
     return DBHelper.dbPromise.then(async db => {
       if (!db) return Promise.reject('db undefined');
 
@@ -326,25 +414,10 @@ class DBHelper {
       const dataStore = tx.objectStore(store);
 
       const obj = await dataStore.get(parseInt(id));
-      obj.is_favorite = !obj.is_favorite;
+      obj.is_favorite = isFavorite;
       dataStore.put(obj);
 
       return tx.complete;
-    });
-  }
-
-  /**
-   * Get status of restaurant
-   */
-  static isFavorite(id) {
-    return DBHelper.dbPromise.then(db => {
-      if (!db) return Promise.reject('db undefined');
-
-      const store = 'restaurants';
-      const tx = db.transaction(store);
-      const dataStore = tx.objectStore(store);
-
-      return dataStore.get(parseInt(id));
     });
   }
 
@@ -358,7 +431,7 @@ class DBHelper {
       const marker = new google.maps.Marker({
         position: restaurant.latlng,
         title: restaurant.name,
-        url: DBHelper.urlForRestaurant(restaurant),
+        url: urlForRestaurant(restaurant.id),
         map: map,
         animation: google.maps.Animation.DROP
       });

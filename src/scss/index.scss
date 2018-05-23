@@ -57,13 +57,6 @@ $white: #fff;
     margin-bottom: 1rem;
     width: 256px;
 
-    > img {
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      height: 152px;
-      width: 100%;
-    }
-
     h3,
     p {
       margin-left: 1rem;
@@ -76,6 +69,13 @@ $white: #fff;
 
   > .inner-places {
     padding-bottom: 0.5rem;
+
+    > img {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      height: 152px;
+      width: 100%;
+    }
 
     &:hover,
     &:focus {

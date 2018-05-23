@@ -59,6 +59,7 @@ export const initRestaurantList = () => {
 
   restaurantList.fetchNeighborhoods();
   restaurantList.fetchCuisines();
+  restaurantList.fetchReviews();
   restaurantList.updateRestaurants();
 };
 
@@ -90,6 +91,7 @@ export const initRestaurant = () => {
       }
     }
   });
+  r.fetchReviews();
 };
 
 export const loadImage = image => {
@@ -138,4 +140,33 @@ export const startIntersectionObserver = () => {
     // watch image
     observer.observe(img);
   });
+};
+
+/**
+ * Restaurant page URL.
+ */
+export const urlForRestaurant = id => `./restaurant.html?id=${id}`;
+
+/**
+ * Calculate rating by reviews
+ */
+export const calculateRatingByReviews = reviews => {
+  if (reviews) {
+    let rating = reviews.reduce((acc, curr) => acc + Number(curr.rating), 0) / reviews.length;
+    return rating.toFixed(1);
+  }
+  return '-';
+};
+
+/**
+ * Get operating hours of current weekday
+ */
+export const getOperatingHours = operatingHours => {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  if (operatingHours) {
+    const d = new Date();
+    const hours = operatingHours[days[d.getDay()]];
+    return hours.replace(',', ' &');
+  }
+  return 'N.A.';
 };

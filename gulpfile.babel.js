@@ -181,6 +181,7 @@ gulp.task('js:bundle', ['js:clean', 'js:lint'], () => {
   return b
     .transform(babelify)
     .bundle()
+    .on('error', util.log)
     .pipe(source('app.bundle.js'))
     .pipe(buffer())
     .pipe(config.production ? util.noop() : sourcemaps.init())

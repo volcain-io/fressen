@@ -1,4 +1,4 @@
-const CACHE_VERSION = 5;
+const CACHE_VERSION = 9;
 const STATIC_CACHE_NAME = `fressen-static-v${CACHE_VERSION}`;
 const CONTENT_IMGS_CACHE = 'fressen-content-imgs';
 const ALL_CACHES = [STATIC_CACHE_NAME, CONTENT_IMGS_CACHE];
@@ -58,7 +58,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   let requestUrl = new URL(event.request.url);
 
-  if (requestUrl.origin === location.origin) {
+  if (requestUrl.origin === location.origin && requestUrl.port === location.port) {
     if (requestUrl.pathname.includes('restaurant.html')) {
       event.respondWith(caches.match('./restaurant.html'));
       return;
@@ -104,5 +104,27 @@ const _servePhoto = request => {
 };
 
 self.addEventListener('message', event => {
-  if (event.data.action === 'skipWaiting') self.skipWaiting();
+  if (!event.data) return;
+
+  switch (event.data) {
+    case 'skipWaiting':
+      self.skipWaiting();
+      break;
+    default:
+      // NOOP
+      break;
+  }
+});
+
+self.addEventListener('sync', event => {
+  if (!event.tag) return;
+
+  switch (event.tag) {
+    case 'syncIndexedDB':
+      // event.waitUntil(DBHelper.updateReviews);
+      break;
+    default:
+      // NOOP
+      break;
+  }
 });

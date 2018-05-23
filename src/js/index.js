@@ -1,5 +1,12 @@
 import DBHelper from './_dbhelper.js';
-import { getId, startIntersectionObserver } from './_utils.js';
+import BtnFavorite from './_btn-favorite.js';
+import {
+  calculateRatingByReviews,
+  getId,
+  getOperatingHours,
+  startIntersectionObserver,
+  urlForRestaurant
+} from './_utils.js';
 
 class RestaurantList {
   constructor(map = null) {
@@ -7,59 +14,72 @@ class RestaurantList {
     this._restaurants = [];
     this._neighborhoods = [];
     this._cuisines = [];
+    this._reviews = [];
     this._markers = [];
+    this._favorites = [];
     this._selectedNeighborhoodId = -1;
     this._selectedCuisineId = -1;
   }
 
-  /**
-   * Toggle selection state to mark the current selected card and update id
-   */
-  _updateSelection(elem, category = 'neighborhood') {
-    // get new selection
-    let id = getId(elem);
-    // we have to toggle the selection
-    if (id && id != -1) {
-      const cElem = document.getElementById(`${category}-${id}`);
-      const cList = cElem.classList;
-      cList.toggle('selected');
-      // remove old selection
-      const oldId =
-        category === 'neighborhood' ? this._selectedNeighborhoodId : this._selectedCuisineId;
-      if (oldId && oldId != -1 && oldId != id) {
-        const oldElem = document.getElementById(`${category}-${oldId}`);
-        oldElem.classList.remove('selected');
-        oldElem.setAttribute('aria-selected', 'false');
-      }
-      cList.contains('selected')
-        ? cElem.setAttribute('aria-selected', 'true')
-        : cElem.setAttribute('aria-selected', 'false');
-      id = cList.contains('selected') ? id : -1;
-    }
-
-    return id;
+  _showMap() {
+    // make map visible
+    const mapElement = document.getElementById('map');
+    if (mapElement) mapElement.classList.remove('hide');
   }
 
-  /**
-   * Toggle favorites icon to mark the current state
-   */
-  _updateFavoritesIcon(id) {
-    DBHelper.isFavorite(id)
-      .then(r => {
-        const isFavorite = r.is_favorite;
-        const elem = document.getElementById(`favorite-${r.id}`);
-        const txtAddOrRemove = isFavorite ? 'Remove' : 'Add';
-        const txtToOrFrom = isFavorite ? 'from' : 'to';
-        const description = `${txtAddOrRemove} ${r.name} restaurant ${txtToOrFrom} favorites`;
-        elem.setAttribute('aria-label', description);
-        const img = elem.children[0];
-        const icon = isFavorite ? 'favorite.svg' : 'favorite-border.svg';
-        img.setAttribute('alt', description);
-        img.setAttribute('src', `./img/material-icons/${icon}`);
-      })
-      .catch(error => {
-        console.error(`Couldn't add restaurant to favorites: `, error);
-      });
+  _addEventListeners(category = 'restaurant') {
+    switch (category) {
+      case 'neighborhood':
+      case 'cuisine':
+        const elements = document.querySelectorAll(`div[id^="${category}-"]`);
+        for (const elem of elements) {
+          elem.addEventListener('click', event => {
+            const selectedId = elem.id.replace(`${category}-`, '');
+            if (category === 'neighborhood') this._selectedNeighborhoodId = selectedId;
+            if (category === 'cuisine') this._selectedCuisineId = selectedId;
+            // make map visible
+            this._showMap();
+            // set background color and update selection id
+            this._updateSelection(category);
+            // update restaurant list
+            this.updateRestaurants();
+          });
+        }
+        break;
+      default:
+        const innerPlaces = document.querySelectorAll('div.inner-places');
+        for (const innerPlace of innerPlaces) {
+          const id = innerPlace.parentElement.id.replace('restaurant-', '');
+          innerPlace.addEventListener('click', event => {
+            window.location.replace(urlForRestaurant(id));
+          });
+        }
+        this._favorites.forEach(favorite => favorite.addEventListener());
+    }
+  }
+
+  _addBtnFavorites() {
+    this._favorites.forEach(favorite => {
+      document.getElementById(`restaurant-${favorite.id}`).appendChild(favorite.node);
+    });
+  }
+
+  _updateSelection(category = 'neighborhood') {
+    const id = category === 'neighborhood' ? this._selectedNeighborhoodId : this._selectedCuisineId;
+    let elements = document.querySelectorAll(`div[id^="${category}-"]`);
+    for (const elem of elements) {
+      if (elem.id === `${category}-${id}`) {
+        elem.classList.toggle('selected');
+      } else {
+        elem.classList.remove('selected');
+      }
+      elem.setAttribute('aria-selected', elem.classList.contains('selected'));
+    }
+    elements = document.querySelectorAll(`div[id^="${category}-"][aria-selected="true"]`);
+    if (elements.length === 0) {
+      if (category === 'neighborhood') this._selectedNeighborhoodId = -1;
+      if (category === 'cuisine') this._selectedCuisineId = -1;
+    }
   }
 
   /**
@@ -92,6 +112,17 @@ class RestaurantList {
     });
   }
 
+  fetchReviews() {
+    DBHelper.fetchAllReviews((error, reviews) => {
+      if (error) {
+        // Got an error
+        console.error(error);
+      } else {
+        this._reviews = reviews;
+      }
+    });
+  }
+
   /**
    * Set neighborhoods HTML.
    */
@@ -112,21 +143,7 @@ class RestaurantList {
     const neighborhoodList = document.getElementById('neighborhoods');
     neighborhoodList.innerHTML = listHtml;
 
-    // add event listeners
-    neighborhoodList.addEventListener('click', event => {
-      event.preventDefault();
-
-      if (!event.target.classList.contains('horizontal-scrolling')) {
-        // make map visible
-        const mapElement = document.getElementById('map');
-        if (mapElement) mapElement.classList.remove('hide');
-
-        // set background color and update selection id
-        this._selectedNeighborhoodId = this._updateSelection(event.target, 'neighborhood');
-
-        this.updateRestaurants();
-      }
-    });
+    this._addEventListeners('neighborhood');
   }
 
   /**
@@ -149,21 +166,7 @@ class RestaurantList {
     const cuisineList = document.getElementById('cuisines');
     cuisineList.innerHTML = listHtml;
 
-    // add event listeners
-    cuisineList.addEventListener('click', event => {
-      event.preventDefault();
-
-      if (!event.target.classList.contains('horizontal-scrolling')) {
-        // make map visible
-        const mapElement = document.getElementById('map');
-        if (mapElement) mapElement.classList.remove('hide');
-
-        // set background color and update selection id
-        this._selectedCuisineId = this._updateSelection(event.target, 'cuisine');
-
-        this.updateRestaurants();
-      }
-    });
+    this._addEventListeners('cuisine');
   }
 
   /**
@@ -175,9 +178,10 @@ class RestaurantList {
     let listHtml = '';
 
     for (let r of this._restaurants) {
-      const rating = DBHelper.calculateRatingByReviews(r.reviews);
-      const operatingHours = DBHelper.getOperatingHours(r.operating_hours);
-      const isFavorite = r.is_favorite;
+      const rating = calculateRatingByReviews(
+        this._reviews.filter(review => review.restaurant_id === r.id)
+      );
+      const operatingHours = getOperatingHours(r.operating_hours);
 
       // fill template with data
       listHtml += template
@@ -185,10 +189,11 @@ class RestaurantList {
         .replace(/{name}/g, r.name)
         .replace(/{address}/g, r.address)
         .replace(/{operatingHours}/g, operatingHours)
-        .replace(/{rating}/g, rating)
-        .replace(/{txtAddOrRemove}/g, isFavorite ? 'Remove' : 'Add')
-        .replace(/{txtToOrFrom}/g, isFavorite ? 'from' : 'to')
-        .replace(/{favoriteIcon}/g, isFavorite ? 'favorite' : 'favorite-border');
+        .replace(/{rating}/g, rating);
+
+      // create favorites button
+      const btnFavorite = new BtnFavorite(r.id, r.is_favorite);
+      this._favorites.push(btnFavorite);
     }
 
     const restaurantList = document.getElementById('restaurants');
@@ -200,35 +205,13 @@ class RestaurantList {
       restaurantList.innerHTML = emptyViewTempl;
     }
 
+    this._addBtnFavorites();
+
     startIntersectionObserver();
 
     this._addMarkersToMap();
 
-    // add event listeners
-    restaurantList.addEventListener('click', event => {
-      event.preventDefault();
-
-      let id = getId(event.target);
-      // toggle favorites
-      if (
-        event.target.id.startsWith('favorite-') ||
-        event.target.parentElement.id.startsWith('favorite-')
-      ) {
-        DBHelper.toggleFavorites(id)
-          .then(() => {
-            this._updateFavoritesIcon(id);
-          })
-          .catch(error => {
-            console.error('Transaction failed: ', error);
-          });
-      } else if (id > 0) window.location.replace(`restaurant.html?id=${id}`);
-      else {
-      }
-    });
-
-    // requestAnimationFrame(() => {
-    //   this._fillRestaurantsHTML();
-    // });
+    this._addEventListeners();
   }
 
   /**
@@ -245,11 +228,7 @@ class RestaurantList {
         } else {
           this._resetRestaurants();
           this._restaurants = restaurants;
-          this._fillRestaurantsHTML();
-          // requestAnimationFrame(() => {
-          //   this._fillRestaurantsHTML();
-          // });
-          // requestAnimationFrame(this._fillRestaurantsHTML.bind(this));
+          requestAnimationFrame(() => this._fillRestaurantsHTML());
         }
       }
     );
@@ -266,6 +245,10 @@ class RestaurantList {
     // Remove all map markers
     for (let m of this._markers) if (m) m.setMap(null);
     this._markers = [];
+
+    // Remove all favorites
+    this._favorites.forEach(favorite => favorite.removeEventListener());
+    this._favorites = [];
   }
 
   /**

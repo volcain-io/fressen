@@ -1,1 +1,0 @@
-{"version":3,"sources":["restaurant-min-850px.scss"],"names":[],"mappings":"AAAA,qCACE,mBACE,gBAAiB,CAClB,CAAA","file":"restaurant-min-850px.css","sourcesContent":["@media screen and (min-width: 850px) {\n  .reviews .comments {\n    font-size: 1.4rem;\n  }\n}\n"]}
