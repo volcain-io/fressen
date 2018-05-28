@@ -30,9 +30,6 @@ class Controller {
         reg.addEventListener('updatefound', () => {
           this._trackInstalling(reg.installing);
         });
-
-        // request a one-off sync
-        reg.sync.register('syncIndexedDB');
       })
       .catch(error => console.error('Failed to register ServiceWorker', error));
 
