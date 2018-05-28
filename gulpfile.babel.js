@@ -191,10 +191,20 @@ gulp.task('js:bundle', ['js:clean', 'js:lint'], () => {
 });
 // Service Worker
 gulp.task('js:sw', ['js:sw:clean'], () => {
-  gulp
-    .src(`${config.paths.src}/service-worker.js`)
+  const opts = {
+    entries: [`${config.paths.src}/service-worker.js`],
+    debug: false,
+    plugin: [watchify]
+  };
+  const b = browserify(opts);
+
+  return b
+    .transform(babelify)
+    .bundle()
+    .on('error', util.log)
+    .pipe(source('service-worker.js'))
+    .pipe(buffer())
     .pipe(config.production ? util.noop() : sourcemaps.init())
-    .pipe(babel())
     .pipe(uglify())
     .pipe(config.production ? util.noop() : sourcemaps.write('./'))
     .pipe(gulp.dest(config.paths.dist));
