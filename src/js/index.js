@@ -1,9 +1,10 @@
-import DBHelper from './_dbhelper.js';
+import DBHelper from './_dbhelper_promises.js';
 import BtnFavorite from './_btn-favorite.js';
 import {
   calculateRatingByReviews,
   getId,
   getOperatingHours,
+  mapMarkerForRestaurant,
   startIntersectionObserver,
   urlForRestaurant
 } from './_utils.js';
@@ -16,9 +17,10 @@ class RestaurantList {
     this._cuisines = [];
     this._reviews = [];
     this._markers = [];
-    this._favorites = [];
+    this._btnFavorites = [];
     this._selectedNeighborhoodId = -1;
     this._selectedCuisineId = -1;
+    this._dbHelper = new DBHelper();
   }
 
   _showMap() {
@@ -54,14 +56,18 @@ class RestaurantList {
             window.location.replace(urlForRestaurant(id));
           });
         }
-        this._favorites.forEach(favorite => favorite.addEventListener());
+        this._btnFavorites.forEach(favorite => favorite.addEventListener());
     }
   }
 
   _addBtnFavorites() {
-    this._favorites.forEach(favorite => {
-      document.getElementById(`restaurant-${favorite.id}`).appendChild(favorite.node);
-    });
+    if (this._btnFavorites) {
+      this._btnFavorites.forEach(favorite => {
+        if (favorite) {
+          document.getElementById(`restaurant-${favorite.id}`).appendChild(favorite.node);
+        }
+      });
+    }
   }
 
   _updateSelection(category = 'neighborhood') {
@@ -86,152 +92,147 @@ class RestaurantList {
    * Fetch all neighborhoods and set their HTML.
    */
   fetchNeighborhoods() {
-    DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-      if (error) {
-        // Got an error
-        console.error(error);
-      } else {
+    this._dbHelper
+      .fetchNeighborhoods()
+      .then(neighborhoods => {
         this._neighborhoods = neighborhoods;
         this._fillNeighborhoodsHTML();
-      }
-    });
+      })
+      .catch(error => console.error(error));
   }
 
   /**
    * Fetch all cuisines and set their HTML.
    */
   fetchCuisines() {
-    DBHelper.fetchCuisines((error, cuisines) => {
-      if (error) {
-        // Got an error!
-        console.error(error);
-      } else {
+    this._dbHelper
+      .fetchCuisines()
+      .then(cuisines => {
         this._cuisines = cuisines;
         this._fillCuisinesHTML();
-      }
-    });
+      })
+      .catch(error => console.error(error));
   }
 
   fetchReviews() {
-    DBHelper.fetchAllReviews((error, reviews) => {
-      if (error) {
-        // Got an error
-        console.error(error);
-      } else {
+    this._dbHelper
+      .fetchReviews()
+      .then(reviews => {
         this._reviews = reviews;
-      }
-    });
+      })
+      .catch(error => console.error(error));
   }
 
   /**
    * Set neighborhoods HTML.
    */
   _fillNeighborhoodsHTML() {
-    const template = document.getElementById('neighborhood-template').innerHTML;
+    if (this._neighborhoods && this._neighborhoods.length > 0) {
+      const template = document.getElementById('neighborhood-template').innerHTML;
 
-    let listHtml = '';
-    for (let n of this._neighborhoods) {
-      // fill template with data
-      listHtml += template
-        .replace(/{id}/g, n.id)
-        .replace(/{name}/g, n.name)
-        .replace(/{icon}/g, n.icon)
-        .replace(/{altText}/g, n.altText);
+      let listHtml = '';
+      for (let n of this._neighborhoods) {
+        // fill template with data
+        listHtml += template
+          .replace(/{id}/g, n.id)
+          .replace(/{name}/g, n.name)
+          .replace(/{icon}/g, n.icon)
+          .replace(/{altText}/g, n.altText);
+      }
+
+      // set list
+      const neighborhoodList = document.getElementById('neighborhoods');
+      neighborhoodList.innerHTML = listHtml;
+
+      this._addEventListeners('neighborhood');
     }
-
-    // set list
-    const neighborhoodList = document.getElementById('neighborhoods');
-    neighborhoodList.innerHTML = listHtml;
-
-    this._addEventListeners('neighborhood');
   }
 
   /**
    * Set cuisines HTML.
    */
   _fillCuisinesHTML() {
-    const template = document.getElementById('cuisine-template').innerHTML;
+    if (this._cuisines && this._cuisines.length > 0) {
+      const template = document.getElementById('cuisine-template').innerHTML;
 
-    let listHtml = '';
-    for (let c of this._cuisines) {
-      // fill template with data
-      listHtml += template
-        .replace(/{id}/g, c.id)
-        .replace(/{name}/g, c.name)
-        .replace(/{icon}/g, c.icon)
-        .replace(/{altText}/g, c.altText);
+      let listHtml = '';
+      for (let c of this._cuisines) {
+        // fill template with data
+        listHtml += template
+          .replace(/{id}/g, c.id)
+          .replace(/{name}/g, c.name)
+          .replace(/{icon}/g, c.icon)
+          .replace(/{altText}/g, c.altText);
+      }
+
+      // set list
+      const cuisineList = document.getElementById('cuisines');
+      cuisineList.innerHTML = listHtml;
+
+      this._addEventListeners('cuisine');
     }
-
-    // set list
-    const cuisineList = document.getElementById('cuisines');
-    cuisineList.innerHTML = listHtml;
-
-    this._addEventListeners('cuisine');
   }
 
   /**
    * Create all restaurants HTML and add them to the webpage.
    */
   _fillRestaurantsHTML() {
-    const template = document.getElementById('restaurant-template').innerHTML;
-
-    let listHtml = '';
-
-    for (let r of this._restaurants) {
-      const rating = calculateRatingByReviews(
-        this._reviews.filter(review => review.restaurant_id === r.id)
-      );
-      const operatingHours = getOperatingHours(r.operating_hours);
-
-      // fill template with data
-      listHtml += template
-        .replace(/{id}/g, r.id)
-        .replace(/{name}/g, r.name)
-        .replace(/{address}/g, r.address)
-        .replace(/{operatingHours}/g, operatingHours)
-        .replace(/{rating}/g, rating);
-
-      // create favorites button
-      const btnFavorite = new BtnFavorite(r.id, r.is_favorite);
-      this._favorites.push(btnFavorite);
-    }
-
     const restaurantList = document.getElementById('restaurants');
-    // set list
-    if (listHtml) {
-      restaurantList.innerHTML = listHtml;
+    if (this._restaurants && this._restaurants.length > 0) {
+      const template = document.getElementById('restaurant-template').innerHTML;
+
+      let listHtml = '';
+
+      for (let r of this._restaurants) {
+        const rating = calculateRatingByReviews(
+          this._reviews.filter(review => review.restaurant_id === r.id)
+        );
+        const operatingHours = getOperatingHours(r.operating_hours);
+
+        // fill template with data
+        listHtml += template
+          .replace(/{id}/g, r.id)
+          .replace(/{name}/g, r.name)
+          .replace(/{address}/g, r.address)
+          .replace(/{operatingHours}/g, operatingHours)
+          .replace(/{rating}/g, rating);
+
+        // create favorites button
+        const btnFavorite = new BtnFavorite(r, r.is_favorite);
+        this._btnFavorites.push(btnFavorite);
+      }
+
+      // set list
+      if (restaurantList) restaurantList.innerHTML = listHtml;
+
+      this._addBtnFavorites();
+
+      startIntersectionObserver();
+
+      this._addMarkersToMap();
+
+      this._addEventListeners();
     } else {
-      const emptyViewTempl = document.getElementById('empty-view').innerHTML;
-      restaurantList.innerHTML = emptyViewTempl;
+      if (restaurantList)
+        restaurantList.innerHTML = document.getElementById('empty-view').innerHTML;
     }
-
-    this._addBtnFavorites();
-
-    startIntersectionObserver();
-
-    this._addMarkersToMap();
-
-    this._addEventListeners();
   }
 
   /**
    * Update page and map for current restaurants.
    */
   updateRestaurants() {
-    DBHelper.fetchRestaurantByCuisineAndNeighborhood(
-      this._selectedCuisineId,
-      this._selectedNeighborhoodId,
-      (error, restaurants) => {
-        if (error) {
-          // Got an error!
-          console.error(error);
-        } else {
-          this._resetRestaurants();
-          this._restaurants = restaurants;
-          requestAnimationFrame(() => this._fillRestaurantsHTML());
-        }
-      }
-    );
+    this._dbHelper
+      .fetchRestaurantByCuisineAndNeighborhood(
+        this._selectedCuisineId,
+        this._selectedNeighborhoodId
+      )
+      .then(restaurants => {
+        this._resetRestaurants();
+        this._restaurants = restaurants;
+        requestAnimationFrame(() => this._fillRestaurantsHTML());
+      })
+      .catch(error => console.error(error));
   }
 
   /**
@@ -243,12 +244,18 @@ class RestaurantList {
     document.getElementById('restaurants').innerHTML = '';
 
     // Remove all map markers
-    for (let m of this._markers) if (m) m.setMap(null);
+    if (this._markers) {
+      for (let m of this._markers) if (m) m.setMap(null);
+    }
     this._markers = [];
 
     // Remove all favorites
-    this._favorites.forEach(favorite => favorite.removeEventListener());
-    this._favorites = [];
+    if (this._btnFavorites) {
+      this._btnFavorites.forEach(favorite => {
+        if (favorite) favorite.removeEventListener();
+      });
+    }
+    this._btnFavorites = [];
   }
 
   /**
@@ -262,7 +269,7 @@ class RestaurantList {
 
       for (let r of this._restaurants) {
         // Add marker to the map
-        const marker = DBHelper.mapMarkerForRestaurant(r, this._map);
+        const marker = mapMarkerForRestaurant(r, this._map);
         // store marker
         this._markers.push(marker);
 
