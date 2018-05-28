@@ -1,6 +1,9 @@
+$black-squeeze: #f5f8fb;
+$black-transparent: rgba(0, 0, 0, 0.3);
 $boulder: #707070;
 $curious-blue: #2177c4;
 $fruit-salad: #357d37;
+$iron: #d2d3d3;
 $quincy: #57482b;
 $white: #fff;
 
@@ -16,23 +19,67 @@ $white: #fff;
 }
 
 // +++ SUBMIT FORM +++
-.form-grid {
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 100px 2fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  margin: 1rem;
-}
-
-.form-layer {
-  background: $white;
-  display: none;
-  height: 100%;
+.backdrop {
+  background: $black-transparent;
+  bottom: 0;
   left: 0;
   position: fixed;
+  right: 0;
   top: 0;
-  width: 100%;
+}
+
+.modal-layer {
+  left: 25%;
+  position: fixed;
+  top: 5%;
+  width: 50vw;
+}
+
+.form-background {
+  background: $black-squeeze;
+  border: 1px solid $iron;
+  border-radius: 5px;
+  padding: 1rem;
   z-index: 9999;
+}
+
+form {
+  input[type='text'],
+  input[type='number'],
+  textarea {
+    border: 1px solid $iron;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    resize: vertical;
+    width: 100%;
+  }
+
+  button {
+    background-color: $curious-blue;
+    border: 1px solid $curious-blue;
+    border-radius: 5px;
+    color: $white;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-left: 0;
+    padding: 0.75rem 1.75rem;
+
+    &:hover,
+    &:focus {
+      background-color: $white;
+      color: $curious-blue;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
 }
 
 // +++ BREADCRUMB +++
@@ -122,8 +169,16 @@ $white: #fff;
 }
 
 .restaurant {
-  table {
-    display: none;
+  details {
+    padding: 1rem;
+
+    summary {
+      font-size: 1.5rem;
+    }
+
+    table {
+      margin: 1rem;
+    }
   }
 
   button {
@@ -172,6 +227,7 @@ $white: #fff;
   .comments {
     grid-column: 1 / 3;
     grid-row: 4;
+    justify-self: flex-start;
   }
 }
 
@@ -180,9 +236,10 @@ button {
     width: 48px;
   }
 
-  // +++ ADD REVIEW +++
-  &.btn-review {
+  // +++ ADD BUTTON +++
+  &.btn-add {
     background: $curious-blue;
+    border: 3px solid $white;
     border-radius: 50%;
     bottom: 1rem;
     color: $white;

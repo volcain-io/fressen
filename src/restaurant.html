@@ -90,22 +90,6 @@
   </style>
   <!-- Inline script -->
   <script>
-   function toggleHours(evt) {
-       const elem = document.getElementById('operating-hours-all');
-       const arrow = document.getElementById('arrow');
-       let elemNewValue = 'block';
-       let arrowOldValue = 'left';
-       let arrowNewValue = 'down';
-       if (elem.style.display && elem.style.display !== 'none') {
-           elemNewValue = 'none';
-           arrowNewValue = 'left';
-           arrowOldValue = 'down';
-       }
-       elem.style.display = elemNewValue;
-       arrow.src = arrow.src.replace(`arrow_${arrowOldValue}`, `arrow_${arrowNewValue}`);
-       arrow.alt = arrow.alt.replace(`arrow_${arrowOldValue}`, `arrow_${arrowNewValue}`);
-   }
-
    function openMaps(name, address) {
        window.open(`https://www.google.com/maps/search/?api=1&query=${name},${address}`, '_blank');
    }
@@ -153,25 +137,29 @@
       </div>
     </section>
     <!-- End reviews -->
-    <!-- Beginning form -->
-    <section id="hidden-form" class="form-layer">
-      <form class="form-grid" id="form-review">
-        <label for="name">Name:</label>
-        <input id="name" type="text" name="name" placeholder="Enter your name" aria-describedby="desc_name" required>
-        <span id="desc_name">Enter your name, which will be displayed on the review list</span>
-        <label for="rating">Rating:</label>
-        <input id="rating" type="number" min="1" max="5" value="3" name="rating" aria-describedby="desc_rating" required>
-        <span id="desc_rating">Choose your rating. Possible values are 1 to 5</span>
-        <label for="comment">Comment:</label>
-        <textarea id="comment" name="comment" placeholder="Enter your review" aria-describedby="desc_comment" cols="40" rows="5" required></textarea>
-        <span id="desc_comment">Fill in what you liked most and didn't like about your visit in this restaurant.</span>
-        <button type="submit" name="submit">Submit Review</button>
-        <button type="reset" name="reset">Reset</button>
-      </form>
-    </section>
-    <!-- End form -->
   </main>
   <!-- End main -->
+
+  <!-- Modal dialog -->
+  <div id="modal-overlay" class="backdrop">
+    <!-- Beginning form -->
+    <div id="modal" class="modal-layer" role="dialog" aria-labelledby="form-header" aria-modal="true">
+      <form id="form-review" class="form-background">
+        <h2 id="form-header" class="text-center">Add Your Review</h2>
+        <label for="name">Name:</label>
+        <input id="name" type="text" name="name" placeholder="Enter your name" required>
+        <label for="rating">Rating:</label>
+        <input id="rating" type="number" name="rating" min="1" max="5" value="3" required>
+        <label for="comments">Comment:</label>
+        <textarea id="comments" name="comments" cols="40" rows="5" placeholder="Fill in what you liked most and/or didn't like about your visit in this restaurant" required></textarea>
+        <div class="form-actions">
+          <button type="submit" id="modal-btn-ok">Submit</button>
+          <button type="button" id="modal-btn-close" value="Close">Close</button>
+        </div>
+      </form>
+    </div>
+    <!-- End form -->
+  </div>
 
   <!-- Beginning footer -->
   <footer id="footer">
@@ -206,12 +194,11 @@
              sizes="(max-width: 600px) 100vw, 50vw"
              alt="Image of {name} Restaurant">
         <div id="map" class="single-map" role="application"></div>
-        <button onclick="toggleHours(event)" aria-label="Show/hide Operating Hours">
-          <span style="font-size: 1.5rem;">Operating Hours</span>
-          <img id="arrow" class="material-icons" src="./img/material-icons/keyboard_arrow_left.svg" alt="Arrow left icon">
-        </button>
-        <table id="operating-hours-all" aria-label="Operating Hours"></table>
       </div>
+      <details>
+          <summary>Operating Hours</summary>
+          <table id="operating-hours-all" aria-label="Operating Hours"></table>
+      </details>
     </div>
   </script>
   <!-- Review template -->
