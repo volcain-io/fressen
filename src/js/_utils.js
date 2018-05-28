@@ -1,4 +1,3 @@
-import DBHelper from './_dbhelper.js';
 import Restaurant from './restaurant.js';
 import RestaurantList from './index.js';
 
@@ -67,13 +66,11 @@ export const initRestaurantList = () => {
  * Initialize Google map, called from HTML.
  */
 export const initRestaurant = () => {
-  const r = new Restaurant();
+  const restaurant = new Restaurant();
 
-  r.fetchRestaurantFromURL((error, r) => {
-    if (error) {
-      // Got an error!
-      console.error(error);
-    } else {
+  restaurant
+    .fetchRestaurantFromURL()
+    .then(restaurant => {
       const map = document.querySelector('#map');
       const h3 = document.createElement('h3');
       h3.classList.add('error');
@@ -84,13 +81,13 @@ export const initRestaurant = () => {
         if (map.hasChildNodes()) map.removeChild(h3);
         const googleMap = new google.maps.Map(document.getElementById('map'), {
           zoom: 16,
-          center: r.latlng,
+          center: restaurant.latlng,
           scrollwheel: false
         });
-        DBHelper.mapMarkerForRestaurant(r, googleMap);
+        mapMarkerForRestaurant(restaurant, googleMap);
       }
-    }
-  });
+    })
+    .catch(error => console.error(error));
 };
 
 export const loadImage = image => {
@@ -170,10 +167,28 @@ export const getOperatingHours = operatingHours => {
   return 'N.A.';
 };
 
-export const convertToHuman = unixTimeStamp => {
+export const convertUnixTimeStampToHuman = unixTimeStamp => {
   if (Number.isInteger(unixTimeStamp)) {
     return new Date(unixTimeStamp).toLocaleString();
   }
 
-  return '-';
+  return new Date().toLocaleString();
+};
+
+/**
+ * Map marker for a restaurant.
+ */
+export const mapMarkerForRestaurant = (restaurant, map) => {
+  if (typeof google === 'undefined') {
+    return null;
+  } else {
+    const marker = new google.maps.Marker({
+      position: restaurant.latlng,
+      title: restaurant.name,
+      url: urlForRestaurant(restaurant.id),
+      map: map,
+      animation: google.maps.Animation.DROP
+    });
+    return marker;
+  }
 };
