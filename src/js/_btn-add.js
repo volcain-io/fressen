@@ -1,10 +1,15 @@
-import DBHelper from './_dbhelper.js';
-
 class BtnAdd {
-  constructor(id, description = 'Add a new review') {
-    this.id = id;
-    this.description = description;
-    this.elementId = `add-${this.id}`;
+  constructor(id, modal, description = 'Add') {
+    this._elementId = `btn-add-${id}`;
+    this._description = description;
+    this._modal = modal;
+
+    /**
+     * Handle click
+     */
+    this._handleClick = event => {
+      if (this._modal) this._modal.open();
+    };
   }
 
   // Node represenation
@@ -18,9 +23,9 @@ class BtnAdd {
   _createNode() {
     const btn = document.createElement('button');
 
-    btn.id = this.elementId;
-    btn.classList.add('btn-review');
-    btn.setAttribute('aria-label', this.description);
+    btn.id = this._elementId;
+    btn.classList.add('btn-add');
+    btn.setAttribute('aria-label', this._description);
     btn.append(this._createText());
 
     return btn;
@@ -39,21 +44,12 @@ class BtnAdd {
     return span;
   }
 
-  /**
-   * Update the database, cache and toggle the state of the button
-   */
-  _update(event) {
-    document.getElementById('hidden-form').style.display = 'block';
-  }
-
   addEventListener() {
-    document.getElementById(this.elementId).addEventListener('click', event => this._update(event));
+    document.getElementById(this._elementId).addEventListener('click', this._handleClick);
   }
 
   removeEventListener() {
-    document
-      .getElementById(this.elementId)
-      .removeEventListener('click', event => this._update(event));
+    document.getElementById(this._elementId).removeEventListener('click', this._handleClick);
   }
 }
 

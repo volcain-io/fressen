@@ -1,11 +1,13 @@
-import DBHelper from './_dbhelper.js';
+import DBHelper from './_dbhelper_promises.js';
 import { updateFavorite } from './_utils.js';
 
 class BtnFavorite {
-  constructor(id, flag, color = 'red') {
-    this.id = id;
-    this.flag = flag;
-    this.color = color;
+  constructor(data, flag, color = 'red') {
+    this._data = data;
+    this._id = data.id;
+    this._flag = flag;
+    this._color = color;
+    this._dbHelper = new DBHelper();
   }
 
   // Node represenation
@@ -13,14 +15,18 @@ class BtnFavorite {
     return this._createBtn();
   }
 
+  get id() {
+    return this._id;
+  }
+
   /**
    * Toggle favorites icon to mark the current state
    */
   toggle(flag) {
-    this.flag = flag;
+    this._flag = flag;
     this.removeEventListener();
 
-    const oldNode = document.getElementById(`favorite-${this.id}`);
+    const oldNode = document.getElementById(`favorite-${this._id}`);
     const newNode = this._createBtn();
 
     oldNode.replaceWith(newNode);
@@ -33,12 +39,12 @@ class BtnFavorite {
    */
   _createBtn() {
     const btn = document.createElement('button');
-    const isFavorite = this.flag === 'true';
+    const isFavorite = this._flag === 'true';
     const txtAddOrRemove = isFavorite ? 'Remove' : 'Add';
     const txtToOrFrom = isFavorite ? 'from' : 'to';
     const description = `${txtAddOrRemove} restaurant ${txtToOrFrom} favorites`;
 
-    btn.id = `favorite-${this.id}`;
+    btn.id = `favorite-${this._id}`;
     btn.setAttribute('data-isfavorite', isFavorite);
     btn.setAttribute('aria-label', description);
     btn.append(this._createImg(description));
@@ -52,10 +58,10 @@ class BtnFavorite {
   _createImg(description) {
     // img inside button element
     const img = document.createElement('img');
-    const isFavorite = this.flag === 'true';
+    const isFavorite = this._flag === 'true';
     const icon = isFavorite ? 'favorite' : 'favorite-border';
     img.setAttribute('alt', description);
-    img.setAttribute('src', `./img/material-icons/${icon}-${this.color}.svg`);
+    img.setAttribute('src', `./img/material-icons/${icon}-${this._color}.svg`);
 
     return img;
   }
@@ -64,31 +70,32 @@ class BtnFavorite {
    * Update the database, cache and toggle the state of the button
    */
   _update(event) {
-    const data = document.getElementById(`favorite-${this.id}`).getAttribute('data-isfavorite');
-    const invertFlag = !(data === 'true');
-    // update entry on server
-    DBHelper.updateFavoriteByRestaurantId(this.id, invertFlag, (error, restaurant) => {
-      if (error) {
-        console.error(error);
-      } else {
-        // update IndexedDB entry
-        DBHelper.updateCachedFavoriteByRestaurantId(restaurant.id, restaurant.is_favorite)
-          .then(() => this.toggle(restaurant.is_favorite))
-          .catch(error => console.error(error));
-      }
-    });
+    const elem = document.getElementById(`favorite-${this._id}`);
+    if (elem) {
+      const isFavorite = elem.getAttribute('data-isfavorite');
+      const invertFlag = !(isFavorite === 'true');
+      // update entry on server
+      this._dbHelper
+        .updateFavoriteByRestaurant(this._data, invertFlag, false)
+        .then(restaurant => {
+          // update entry on IndexedDB
+          this._dbHelper
+            .updateFavoriteByRestaurant(restaurant, restaurant.is_favorite, true)
+            .then(data => this.toggle(data.is_favorite))
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+    }
   }
 
   addEventListener() {
-    document
-      .getElementById(`favorite-${this.id}`)
-      .addEventListener('click', event => this._update(event));
+    const elem = document.getElementById(`favorite-${this._id}`);
+    if (elem) elem.addEventListener('click', event => this._update(event));
   }
 
   removeEventListener() {
-    document
-      .getElementById(`favorite-${this.id}`)
-      .removeEventListener('click', event => this._update(event));
+    const elem = document.getElementById(`favorite-${this._id}`);
+    if (elem) elem.removeEventListener('click', event => this._update(event));
   }
 }
 
