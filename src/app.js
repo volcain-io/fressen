@@ -1,4 +1,5 @@
 import Controller from './js/_controller.js';
+import DBHelper from './js/_dbhelper_promises.js';
 import { initRestaurant, initRestaurantList, startIntersectionObserver } from './js/_utils.js';
 
 /**
