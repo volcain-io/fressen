@@ -1,8 +1,10 @@
-const CACHE_VERSION = 9;
+import DBHelper from './js/_dbhelper_promises.js';
+
+const CACHE_VERSION = 2;
 const STATIC_CACHE_NAME = `fressen-static-v${CACHE_VERSION}`;
 const CONTENT_IMGS_CACHE = 'fressen-content-imgs';
-const ALL_CACHES = [STATIC_CACHE_NAME, CONTENT_IMGS_CACHE];
 const GOOGLE_MAP_API_KEY = 'AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE';
+const _dbHelper = new DBHelper();
 
 self.addEventListener('install', event => {
   const urlsToPrefetch = [
@@ -14,6 +16,22 @@ self.addEventListener('install', event => {
     './css/restaurant-min-600px.css',
     './css/restaurant-min-850px.css',
     './css/restaurant-min-1000px.css',
+    './img/placeholder.png',
+    './img/cuisines/american.svg',
+    './img/cuisines/asian.svg',
+    './img/cuisines/mexican.svg',
+    './img/cuisines/pizza.svg',
+    './img/material-icons/back.svg',
+    './img/material-icons/directions.svg',
+    './img/material-icons/favorite-border-red.svg',
+    './img/material-icons/favorite-border-white.svg',
+    './img/material-icons/favorite-red.svg',
+    './img/material-icons/favorite-white.svg',
+    './img/material-icons/portrait.svg',
+    './img/material-icons/restaurant.svg',
+    './img/neighborhoods/brooklyn.svg',
+    './img/neighborhoods/manhattan.svg',
+    './img/neighborhoods/queens.svg',
     './app.bundle.js'
   ];
   const foreignUrlsToPrefetch = [
@@ -32,7 +50,7 @@ self.addEventListener('install', event => {
             cache.put(request, response);
           })
           .catch(() => {
-            console.error(`Fetching request failed: ${request}`);
+            console.error(`Fetching request failed: ${request.url}`);
           });
       }
     })
@@ -45,7 +63,8 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames
           .filter(
-            cacheName => cacheName.startsWith(STATIC_CACHE_NAME) && !ALL_CACHES.includes(cacheName)
+            cacheName =>
+              !(cacheName.startsWith(STATIC_CACHE_NAME) || cacheName.startsWith(CONTENT_IMGS_CACHE))
           )
           .map(cacheName => {
             caches.delete(cacheName);
@@ -63,7 +82,7 @@ self.addEventListener('fetch', event => {
       event.respondWith(caches.match('./restaurant.html'));
       return;
     }
-    if (requestUrl.pathname.includes('/img')) {
+    if (requestUrl.pathname.includes('/img/restaurant')) {
       event.respondWith(_servePhoto(event.request));
       return;
     }
@@ -116,12 +135,12 @@ self.addEventListener('message', event => {
   }
 });
 
-self.addEventListener('sync', event => {
+self.addEventListener('sync', function(event) {
   if (!event.tag) return;
 
   switch (event.tag) {
     case 'syncIndexedDB':
-      // event.waitUntil(DBHelper.updateReviews);
+      event.waitUntil(_dbHelper.updateReviews());
       break;
     default:
       // NOOP
