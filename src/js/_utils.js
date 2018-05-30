@@ -171,3 +171,28 @@ export const mapMarkerForRestaurant = (restaurant, map) => {
     return marker;
   }
 };
+
+/**
+ * Enables the ability to add reviews while offline and sync with server when online again.
+ * Works just with the 'Offline' flag in the DevTools
+ */
+export const offlineReviewSupport = () => {
+  // flag needed to prevent the first run when online
+  let firstRun = navigator.onLine;
+
+  function backOnline() {
+    if (firstRun) return;
+    // update reviews when online again
+    const _dbHelper = new DBHelper();
+    _dbHelper.updateReviews().then(() => {
+      firstRun = !firstRun;
+    });
+  }
+
+  function goneOffline() {
+    firstRun = !firstRun;
+  }
+
+  window.addEventListener('online', backOnline);
+  window.addEventListener('offline', goneOffline);
+};

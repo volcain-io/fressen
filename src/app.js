@@ -1,6 +1,6 @@
 import Controller from './js/_controller.js';
 import DBHelper from './js/_dbhelper_promises.js';
-import { startIntersectionObserver } from './js/_utils.js';
+import { startIntersectionObserver, offlineReviewSupport } from './js/_utils.js';
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', event => {
 
 window.onload = () => {
   startIntersectionObserver();
+  // add offline review support
+  offlineReviewSupport();
 };
 
 window.requestAnimationFrame =
