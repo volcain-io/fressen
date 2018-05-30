@@ -152,7 +152,7 @@
   <!-- Beginning main -->
   <main id="maincontent">
     <!-- Beginning map -->
-    <section class="map hide" id="map" role="application"></section>
+    <section class="map hide" id="map"></section>
     <!-- Beginning filter neighborhood -->
     <section class="filter">
       <h2 class="filter-header">
@@ -237,9 +237,9 @@
 
   <!-- Beginning scripts -->
   <script async src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
-  <script src="app.bundle.js"></script>
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap"></script>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE"></script>
+  <script defer src="app.bundle.js"></script>
   <!-- Main style for FRESSEN -->
   <noscript id="deferred-styles">
     <link rel="stylesheet" href="css/index.css">
