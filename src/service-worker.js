@@ -1,6 +1,6 @@
 import DBHelper from './js/_dbhelper_promises.js';
 
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 const STATIC_CACHE_NAME = `fressen-static-v${CACHE_VERSION}`;
 const CONTENT_IMGS_CACHE = 'fressen-content-imgs';
 const GOOGLE_MAP_API_KEY = 'AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE';
@@ -17,10 +17,6 @@ self.addEventListener('install', event => {
     './css/restaurant-min-850px.css',
     './css/restaurant-min-1000px.css',
     './img/placeholder.png',
-    './img/cuisines/american.svg',
-    './img/cuisines/asian.svg',
-    './img/cuisines/mexican.svg',
-    './img/cuisines/pizza.svg',
     './img/material-icons/back.svg',
     './img/material-icons/directions.svg',
     './img/material-icons/favorite-border-red.svg',
@@ -29,14 +25,11 @@ self.addEventListener('install', event => {
     './img/material-icons/favorite-white.svg',
     './img/material-icons/portrait.svg',
     './img/material-icons/restaurant.svg',
-    './img/neighborhoods/brooklyn.svg',
-    './img/neighborhoods/manhattan.svg',
-    './img/neighborhoods/queens.svg',
     './app.bundle.js'
   ];
   const foreignUrlsToPrefetch = [
-    'https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver',
-    `https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE&libraries=places&callback=initMap`
+    // 'https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver',
+    // `https://maps.googleapis.com/maps/api/js?key=AIzaSyBni5ZJUEvoGfyJO2yCNTbDW9B2eIs1pDE`
   ];
 
   event.waitUntil(
@@ -82,7 +75,11 @@ self.addEventListener('fetch', event => {
       event.respondWith(caches.match('./restaurant.html'));
       return;
     }
-    if (requestUrl.pathname.includes('/img/restaurant')) {
+    if (
+      requestUrl.pathname.includes('/img/restaurant') ||
+      requestUrl.pathname.includes('/img/cuisines') ||
+      requestUrl.pathname.includes('/img/neighborhoods')
+    ) {
       event.respondWith(_servePhoto(event.request));
       return;
     }

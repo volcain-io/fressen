@@ -1,18 +1,16 @@
 import Controller from './js/_controller.js';
 import DBHelper from './js/_dbhelper_promises.js';
-import { initRestaurant, initRestaurantList, startIntersectionObserver } from './js/_utils.js';
+import { startIntersectionObserver } from './js/_utils.js';
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', event => {
+  // register service worker
   const controller = new Controller();
   controller.registerServiceWorker();
+  controller.loadPage();
 });
-
-window.initMap = () => {
-  location.pathname === '/restaurant.html' ? initRestaurant() : initRestaurantList();
-};
 
 window.onload = () => {
   startIntersectionObserver();

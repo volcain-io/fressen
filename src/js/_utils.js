@@ -36,58 +36,37 @@ export const getId = elem => {
   return -1;
 };
 
-/**
- * Initialize Google map, called from HTML.
- */
-export const initRestaurantList = () => {
-  let googleMap;
-  const map = document.querySelector('#map');
-  map.style.display = typeof google === 'undefined' ? 'none' : 'block';
-  if (typeof google !== 'undefined') {
-    const loc = {
-      lat: 40.722216,
-      lng: -73.987501
-    };
-    googleMap = new google.maps.Map(document.getElementById('map'), {
-      zoom: 12,
-      center: loc,
-      scrollwheel: false
-    });
+export const loadInstance = page => {
+  switch (page) {
+    case 'restaurant':
+      new Restaurant();
+      break;
+    default:
+      new RestaurantList();
   }
-  let restaurantList = new RestaurantList(googleMap);
-
-  restaurantList.fetchNeighborhoods();
-  restaurantList.fetchCuisines();
-  restaurantList.fetchReviews();
-  restaurantList.updateRestaurants();
 };
 
-/**
- * Initialize Google map, called from HTML.
- */
-export const initRestaurant = () => {
-  const restaurant = new Restaurant();
-
-  restaurant
-    .fetchRestaurantFromURL()
-    .then(restaurant => {
-      const map = document.querySelector('#map');
+export const loadMap = () => {
+  const elemMap = document.getElementById('map');
+  if (elemMap) {
+    if (typeof google === 'undefined') {
       const h3 = document.createElement('h3');
       h3.classList.add('error');
       h3.textContent = 'Google Maps not available';
-      if (typeof google === 'undefined') {
-        map.appendChild(h3);
-      } else {
-        if (map.hasChildNodes()) map.removeChild(h3);
-        const googleMap = new google.maps.Map(document.getElementById('map'), {
-          zoom: 16,
-          center: restaurant.latlng,
-          scrollwheel: false
-        });
-        mapMarkerForRestaurant(restaurant, googleMap);
-      }
-    })
-    .catch(error => console.error(error));
+      elemMap.appendChild(h3);
+    } else {
+      const loc = {
+        lat: 40.722216,
+        lng: -73.987501
+      };
+      return new google.maps.Map(elemMap, {
+        zoom: 12,
+        center: loc,
+        scrollwheel: false
+      });
+    }
+  }
+  return null;
 };
 
 export const loadImage = image => {

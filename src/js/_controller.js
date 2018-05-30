@@ -1,3 +1,5 @@
+import { loadInstance } from './_utils.js';
+
 class Controller {
   constructor() {
     this._serviceWorkerURL = './../service-worker.js';
@@ -40,6 +42,19 @@ class Controller {
       if (window.location.origin === document.referrer) window.location.reload();
       refreshing = true;
     });
+  }
+
+  loadPage() {
+    if (location) {
+      switch (location.pathname) {
+        case '/':
+          loadInstance('index');
+          break;
+        case '/restaurant.html':
+          loadInstance('restaurant');
+          break;
+      }
+    }
   }
 
   _trackInstalling(worker) {
