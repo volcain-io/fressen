@@ -50,7 +50,7 @@ class Restaurant {
   _updateUI() {
     if (this._restaurant) {
       document.getElementById('title').textContent += this._restaurant.name;
-      document.getElementById('name').textContent = this._restaurant.name;
+      document.getElementById('restaurant-name').textContent = this._restaurant.name;
       document.getElementById('breadcrumb-name').textContent = this._restaurant.name;
       this._fillRestaurantHTML();
     }
