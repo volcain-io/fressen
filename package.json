@@ -4,10 +4,8 @@
   "description": "--- #### _Three Stage Course Material Project - Restaurant Reviews_",
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack",
-    "build:prod": "./node_modules/.bin/webpack -p",
-    "watch": "./node_modules/.bin/webpack --watch",
-    "dev": "./node_modules/.bin/webpack-dev-server",
+    "watch": "./node_modules/.bin/gulp",
+    "prod": "./node_modules/.bin/gulp --production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,16 +19,16 @@
   },
   "homepage": "https://github.com/volcain-io/fressen#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.2",
-    "babel-preset-env": "^1.6.1",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
-    "browser-sync": "^2.23.6",
-    "browserify": "^16.2.0",
+    "browser-sync": "^2.24.4",
+    "browserify": "^16.2.2",
     "del": "^3.0.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-prettier": "^2.6.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
@@ -47,14 +45,14 @@
     "gulp-tap": "^1.0.1",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
-    "prettier": "^1.11.1",
-    "sharp": "^0.20.1",
+    "prettier": "^1.13.2",
+    "sharp": "^0.20.3",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.0"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "idb": "^2.1.1"
+    "idb": "^2.1.2",
+    "regenerator": "^0.12.4"
   }
 }
