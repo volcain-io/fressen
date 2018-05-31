@@ -4,8 +4,98 @@ $boulder: #707070;
 $curious-blue: #2177c4;
 $fruit-salad: #357d37;
 $iron: #d2d3d3;
+$mine-shaft: #212121;
 $quincy: #57482b;
 $white: #fff;
+$wild-sand: #f6f6f6;
+
+:root {
+  background: $wild-sand;
+  color: $mine-shaft;
+}
+
+body {
+  margin: 0;
+}
+
+body,
+td,
+th,
+p {
+  font-family: Lato, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.2em;
+}
+
+a,
+button {
+  color: $mine-shaft;
+  min-height: 48px;
+  min-width: 48px;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+
+button {
+  background-color: inherit;
+  border: 0;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus {
+  color: $white;
+}
+
+img,
+embed,
+object,
+video {
+  max-width: 100%;
+}
+
+nav {
+  display: flex;
+
+  h1 {
+    flex-grow: 1;
+  }
+}
+
+nav,
+footer {
+  background-color: $curious-blue;
+  color: $white;
+  padding: 0.5rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+nav a,
+footer a {
+  color: $white;
+  text-decoration: none;
+}
+
+nav a:hover,
+footer a:hover,
+nav a:focus,
+footer a:focus {
+  color: $mine-shaft;
+  text-decoration: underline;
+}
+
+.material-icons {
+  max-width: 24px;
+}
+
+.empty {
+  text-align: center;
+}
 
 // +++ CENTER TEXT +++
 .text-center {
@@ -117,6 +207,15 @@ form {
 .single-map {
   height: 30vh;
   width: 100%;
+
+  img {
+    max-height: unset;
+  }
+
+  button {
+    min-height: 0;
+    min-width: 0;
+  }
 }
 
 // +++ RATING +++

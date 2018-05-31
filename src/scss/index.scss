@@ -1,9 +1,161 @@
 $black-squeeze: #f5f8fb;
+$boulder: #707070;
+$curious-blue: #2177c4;
+$fruit-salad: #357d37;
 $iron: #d2d3d3;
 $link-water: #dae6f3;
 $mine-shaft: #212121;
 $quincy: #57482b;
 $white: #fff;
+$wild-sand: #f6f6f6;
+
+:root {
+  background: $wild-sand;
+  color: $mine-shaft;
+}
+
+body {
+  margin: 0;
+}
+
+body,
+td,
+th,
+p {
+  font-family: Abel, Verdana, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.2em;
+}
+
+a,
+button {
+  color: $mine-shaft;
+  min-height: 48px;
+  min-width: 48px;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+
+button {
+  background-color: inherit;
+  border: 0;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus {
+  color: $white;
+}
+
+img,
+embed,
+object,
+video {
+  max-width: 100%;
+}
+
+nav,
+footer {
+  background-color: $curious-blue;
+  color: $white;
+  padding: 0.5rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+nav {
+  display: flex;
+
+  img {
+    opacity: 0.5;
+    width: 48px;
+  }
+
+  h1 {
+    flex-grow: 1;
+  }
+
+  button {
+    color: $white;
+  }
+}
+
+nav a,
+footer a {
+  color: $white;
+  text-decoration: none;
+}
+
+nav a:hover,
+footer a:hover,
+nav a:focus,
+footer a:focus {
+  color: $mine-shaft;
+  text-decoration: underline;
+}
+
+main {
+  margin: 0 auto;
+  max-width: 1000px;
+
+  img {
+    max-height: unset;
+  }
+
+  button {
+    min-height: 0;
+    min-width: 0;
+  }
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: calc(5 * 256px + 5rem);
+}
+
+.empty {
+  text-align: center;
+}
+
+.map {
+  border: 1px solid $iron;
+  height: 200px;
+  width: 100%;
+}
+
+.rating {
+  background-color: $fruit-salad;
+  border-radius: 5px;
+  color: $white;
+  font-weight: bold;
+  padding: 0.4rem;
+  position: absolute;
+  text-align: center;
+  width: 2rem;
+}
+
+.filter {
+  margin: 0 0 1rem 1rem;
+  text-align: center;
+}
+
+.filter-header {
+  color: $boulder;
+  font-size: 1.1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.hide {
+  display: none !important;
+}
 
 // +++ HORIZONTAL SCROLLING +++
 .horizontal-scrolling {
@@ -30,9 +182,15 @@ $white: #fff;
     background-color: $link-water;
   }
 
+  &:hover,
+  &:focus {
+    background: $black-squeeze;
+  }
+
   button {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    padding: 1rem;
     width: 100%;
 
     &:hover,
